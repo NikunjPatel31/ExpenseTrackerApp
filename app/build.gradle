@@ -31,7 +31,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
+    //dependency for image crop
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     //dependency for circular image view
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    //dependency for firebase
+    implementation 'com.google.firebase:firebase-analytics:17.4.4'
+    implementation 'com.google.firebase:firebase-auth:19.3.2'
+
 }
+apply plugin: 'com.google.gms.google-services'
