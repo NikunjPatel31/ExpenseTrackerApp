@@ -9,14 +9,14 @@ import android.widget.LinearLayout;
 
 import com.sanPatel.expensetracker.R;
 
-public class SignInActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    private LinearLayout linearLayoutLogin;
+    private LinearLayout linearLayoutSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.activity_login);
 
         initializeWidgets();
         widgetsClickListener();
@@ -24,15 +24,15 @@ public class SignInActivity extends AppCompatActivity {
 
     private void initializeWidgets() {
         // this method will initialize all the widgets.
-        linearLayoutLogin = findViewById(R.id.linear_layout_login);
+        linearLayoutSignIn = findViewById(R.id.linear_layout_sign_in);
     }
 
     private void widgetsClickListener() {
         // this method will handle click listener for all widgets.
-        linearLayoutLogin.setOnClickListener(new View.OnClickListener() {
+        linearLayoutSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SignInActivity.this, LoginActivity.class));
+                startActivity(new Intent(LoginActivity.this, SignInActivity.class));
             }
         });
     }

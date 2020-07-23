@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Authentication.SignInActivity"></activity>
+        <activity android:name=".Authentication.LoginActivity" android:launchMode="singleTask"></activity>
+        <activity android:name=".Authentication.SignInActivity" android:launchMode="singleTask"/>
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

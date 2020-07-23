@@ -8,4 +8,42 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="authenticationEdittext">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorHeading</item>
+        <item name="android:textColorHint">@color/colorEdittextHint</item>
+        <item name="android:background">@drawable/edit_text_background</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">20dp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="authenticationButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:textColor">@color/colorHeading</item>
+        <item name="android:background">@drawable/button_authentication_background</item>
+        <item name="android:layout_marginTop">40dp</item>
+    </style>
+
+    <style name="authenticationTextViewHeading">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="fontFamily">@font/pacifico_regular</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorHeading</item>
+        <item name="android:textSize">40sp</item>
+    </style>
 </resources>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.sanPatel.expensetracker.Authentication.LoginActivity;
 import com.sanPatel.expensetracker.Authentication.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,6 +15,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startActivity( new Intent(MainActivity.this, SignInActivity.class));
+        startActivity( new Intent(MainActivity.this, LoginActivity.class));
     }
 }

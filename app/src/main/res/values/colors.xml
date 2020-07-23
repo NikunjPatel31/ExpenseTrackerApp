@@ -7,4 +7,5 @@
     <color name="colorEdittextHint">#CCFFFFFF</color>
     <color name="colorPrimaryLight">#5852D8</color>
     <color name="colorGrey">#9C9999</color>
+    <color name="colorAuthenticationButtonRipple">#8D96CC</color>
 </resources>
