@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,11 +14,19 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.sanPatel.expensetracker.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -46,12 +55,13 @@ public class SignInActivity extends AppCompatActivity {
 
     public void signIn(View view) {
         // this handle the click listener for sign In button
-        if (!storagePermission) {
+        if (storagePermission) {
             if (validateFields()) {
-
+                signIn();
             }
         } else {
             // show message "Storage permission not given.
+            Toast.makeText(this, "Storage permission not given.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -60,6 +70,9 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
         initializeWidgets();
         widgetsClickListener();
     }
@@ -72,6 +85,12 @@ public class SignInActivity extends AppCompatActivity {
             // if storage permission == false, request will initiate.
             getStoragePermission();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        storagePermission = checkStoragePermission();
     }
 
     private void initializeWidgets() {
@@ -131,6 +150,15 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    private boolean checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(SignInActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED) {
+            return  true;
+        } else {
+            return false;
+        }
+    }
+
     private void getStoragePermission() {
         // this method will request storage permission from the user.
         ActivityCompat.requestPermissions(SignInActivity.this,
@@ -179,5 +207,45 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void signIn() {
+        // this method will create new account for the user.
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // new account created successful.
+                    // store user data inside the database.
+                    // navigate to the home screen.
+                } else {
+                    // error in creating new account.
+                    Toast.makeText(SignInActivity.this, "Error in creating account.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof FirebaseAuthInvalidUserException) {
+                    String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
+
+                    if(errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE")) {
+                        Toast.makeText(SignInActivity.this, "Email is already in use.", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    String errorCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
+
+                    if(errorCode.equals("ERROR_INVALID_EMAIL")) {
+                        Toast.makeText(SignInActivity.this, "Incorrect email.", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (e instanceof FirebaseAuthUserCollisionException) {
+                    String errorCode = ((FirebaseAuthUserCollisionException) e).getErrorCode();
+                    if (errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE"))
+                    {
+                        Toast.makeText(SignInActivity.this, "Email address is already in use.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 }
