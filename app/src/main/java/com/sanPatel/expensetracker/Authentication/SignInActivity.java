@@ -9,6 +9,9 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -27,9 +31,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
+import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -43,6 +52,12 @@ public class SignInActivity extends AppCompatActivity {
     //firebase
     private FirebaseAuth mAuth;
 
+    //SqliteDatabaseHelper
+    private SqliteDatabaseHelper databaseHelper;
+
+    //async
+    MyAsyncTask myAsyncTask;
+
     //instance variable
     String firstName, lastName, email, password;
     Uri imageUri;
@@ -51,6 +66,7 @@ public class SignInActivity extends AppCompatActivity {
     private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
 
     //flag variables
+    private boolean photoSelected = false;
     private boolean storagePermission = false;
 
     public void signIn(View view) {
@@ -75,6 +91,7 @@ public class SignInActivity extends AppCompatActivity {
         );
         initializeWidgets();
         widgetsClickListener();
+        databaseHelper = new SqliteDatabaseHelper(SignInActivity.this);
     }
 
     @Override
@@ -90,6 +107,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        photoSelected = false;
         storagePermission = checkStoragePermission();
     }
 
@@ -135,9 +153,9 @@ public class SignInActivity extends AppCompatActivity {
 
     private boolean validateFields() {
         // this method will validate all required fields.
-        firstName = etFirstName.getText().toString();
-        lastName = etLastName.getText().toString();
-        email = etEmail.getText().toString();
+        firstName = etFirstName.getText().toString().trim();
+        lastName = etLastName.getText().toString().trim();
+        email = etEmail.getText().toString().trim();
         password = etPassword.getText().toString();
 
         if (!(TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(email) && TextUtils.isEmpty(password))) {
@@ -203,7 +221,15 @@ public class SignInActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 if (result != null) {
                     Uri resultUri = result.getUri();
-                    cirImgProfilePhoto.setImageURI(resultUri);
+
+                    try {
+                        InputStream inputStream = getContentResolver().openInputStream(resultUri);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        cirImgProfilePhoto.setImageBitmap(bitmap);
+                        photoSelected = true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -218,6 +244,24 @@ public class SignInActivity extends AppCompatActivity {
                     // new account created successful.
                     // store user data inside the database.
                     // navigate to the home screen.
+                    myAsyncTask = new MyAsyncTask();
+                    myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
+                        @Override
+                        public void setBackgroundTask() {
+                            if (photoSelected) {
+                                databaseHelper.insertUserData(mAuth.getUid(), firstName, lastName, email, imageViewToByte(cirImgProfilePhoto));
+                            } else {
+                                databaseHelper.insertUserData(mAuth.getUid(), firstName, lastName, email, null);
+                            }
+
+                        }
+
+                        @Override
+                        public void setPostExecuteTask() {
+                            // navigate to the home screen
+                        }
+                    });
+                    myAsyncTask.execute();
                 } else {
                     // error in creating new account.
                     Toast.makeText(SignInActivity.this, "Error in creating account.", Toast.LENGTH_SHORT).show();
@@ -247,5 +291,14 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private byte[] imageViewToByte(ImageView imageView) {
+        // this method will convert image view into the byte.
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
     }
 }
