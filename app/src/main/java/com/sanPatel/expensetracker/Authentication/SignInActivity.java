@@ -56,11 +56,11 @@ public class SignInActivity extends AppCompatActivity {
     private SqliteDatabaseHelper databaseHelper;
 
     //async
-    MyAsyncTask myAsyncTask;
+    private MyAsyncTask myAsyncTask;
 
     //instance variable
-    String firstName, lastName, email, password;
-    Uri imageUri;
+    private String firstName, lastName, email, password;
+    private Uri imageUri;
 
     //final variables
     private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
