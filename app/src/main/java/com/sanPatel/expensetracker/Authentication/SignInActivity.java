@@ -31,6 +31,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.R;
@@ -51,6 +53,7 @@ public class SignInActivity extends AppCompatActivity {
 
     //firebase
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     //SqliteDatabaseHelper
     private SqliteDatabaseHelper databaseHelper;
@@ -125,6 +128,9 @@ public class SignInActivity extends AppCompatActivity {
         // this method will initialize all the instance of firebase.
         if (mAuth == null) {
             mAuth = FirebaseAuth.getInstance();
+        }
+        if (mDatabase == null) {
+            mDatabase = FirebaseDatabase.getInstance().getReference();
         }
     }
 
@@ -244,6 +250,9 @@ public class SignInActivity extends AppCompatActivity {
                     // new account created successful.
                     // store user data inside the database.
                     // navigate to the home screen.
+                    DatabaseReference db = mDatabase.child("User").child(mAuth.getUid());
+                    db.child("First_name").setValue(firstName);
+                    db.child("Last_name").setValue(lastName);
                     myAsyncTask = new MyAsyncTask();
                     myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
                         @Override
