@@ -58,7 +58,7 @@ public class SignInActivity extends AppCompatActivity {
     //async
     private MyAsyncTask myAsyncTask;
 
-    //instance variable
+    //local variable
     private String firstName, lastName, email, password;
     private Uri imageUri;
 
@@ -163,7 +163,7 @@ public class SignInActivity extends AppCompatActivity {
             return true;
         } else {
             // fields are not validated.
-            Toast.makeText(this, "Fields are not validated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Fields are empty", Toast.LENGTH_SHORT).show();
             return false;
         }
     }

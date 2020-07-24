@@ -31,6 +31,7 @@
     <EditText
         android:id="@+id/edit_text_password"
         android:hint="Password"
+        android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_email"
@@ -57,7 +58,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_view_forgot_password"
-        style="@style/authenticationButton"/>
+        style="@style/authenticationButton"
+        android:onClick="login"/>
 
     <LinearLayout
         android:id="@+id/linear_layout_sign_in"
