@@ -20,6 +20,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -96,7 +102,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // user login successful.
-                            Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
+                            // retrieve user's first_name and last_name.
+                            retrieveUserData();
+                            //Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
                         } else {
                             // error in user login
                             Toast.makeText(LoginActivity.this, "Error while login.", Toast.LENGTH_SHORT).show();
@@ -123,6 +131,27 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Email address is already in use.", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
+        });
+    }
+
+    private void retrieveUserData() {
+        // retrieve user data.
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("User").child(mAuth.getUid());
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                SqliteDatabaseHelper db = new SqliteDatabaseHelper(LoginActivity.this);
+                db.insertUserData(mAuth.getUid(),
+                        snapshot.child("First_name").getValue().toString(),
+                        snapshot.child("Last_name").getValue().toString(),
+                        email,
+                        null);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
