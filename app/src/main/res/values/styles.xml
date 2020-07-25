@@ -46,4 +46,19 @@
         <item name="android:textColor">@color/colorHeading</item>
         <item name="android:textSize">40sp</item>
     </style>
+
+    <style name="homeScreentopbarTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/colorEdittextHint</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+    </style>
+    
+    <style name="homeScreenFab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:visibility">invisible</item>
+    </style>
 </resources>

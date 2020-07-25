@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
+import com.sanPatel.expensetracker.HomeScreenActivity;
 import com.sanPatel.expensetracker.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -147,6 +148,10 @@ public class LoginActivity extends AppCompatActivity {
                         snapshot.child("Last_name").getValue().toString(),
                         email,
                         null);
+                Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             }
 
             @Override

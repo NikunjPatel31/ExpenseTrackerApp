@@ -5,6 +5,7 @@
         <item>@font/noto_sans_bold</item>
         <item>@font/poppins</item>
         <item>@font/poppins_medium</item>
+        <item>@font/roboto_medium</item>
         <item>@font/rubik_bold</item>
     </array>
 </resources>
