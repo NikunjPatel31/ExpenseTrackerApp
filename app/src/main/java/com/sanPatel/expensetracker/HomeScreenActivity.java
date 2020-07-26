@@ -2,6 +2,7 @@ package com.sanPatel.expensetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -9,6 +10,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sanPatel.expensetracker.AccountSetting.SettingActivity;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
@@ -47,7 +49,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void setting(View view) {
         // this method will handle click listener for fabSetting.
-        Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(HomeScreenActivity.this, SettingActivity.class));
     }
 
     public void addExpense(View view) {

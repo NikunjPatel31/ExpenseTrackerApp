@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textColorSecondary">@color/colorHeading</item>
+        <item name="colorControlHighlight">@color/colorAuthenticationButtonRipple</item>
     </style>
 
     <style name="authenticationEdittext">
@@ -60,5 +63,24 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="backgroundTint">@color/colorPrimary</item>
         <item name="android:visibility">invisible</item>
+    </style>
+
+    <style name="settingScreenTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/noto_sans_bold</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_marginStart">35dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+
+    <style name="settingScreenTextViewValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/noto_sans</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginTop">20dp</item>
     </style>
 </resources>

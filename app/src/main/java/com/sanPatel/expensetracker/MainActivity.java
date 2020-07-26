@@ -26,13 +26,11 @@ public class MainActivity extends AppCompatActivity {
             // there is no user. navigate to the login screen.
             Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         } else {
             // there is user. navigate to homeScreen.
             Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         }

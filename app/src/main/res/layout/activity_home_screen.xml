@@ -37,7 +37,7 @@
                     android:id="@+id/text_view_gained_amount"
                     style="@style/homeScreentopbarTextView"
                     android:fontFamily="@font/roboto_medium"
-                    android:text="Gained : "
+                    android:text="Income : "
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
