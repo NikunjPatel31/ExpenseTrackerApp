@@ -1,13 +1,20 @@
 package com.sanPatel.expensetracker.Datas;
 
+import android.graphics.Bitmap;
+
 public class User {
     String user_id, first_name, last_name, email;
+    Bitmap photo;
 
-    public User(String user_id, String first_name, String last_name, String email) {
+    public User() {
+    }
+
+    public User(String user_id, String first_name, String last_name, String email, Bitmap photo) {
         this.user_id = user_id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
+        this.photo = photo;
     }
 
     public String getUser_id() {
@@ -40,5 +47,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
     }
 }

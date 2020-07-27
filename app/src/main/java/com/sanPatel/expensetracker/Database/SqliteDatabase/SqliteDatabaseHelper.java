@@ -2,6 +2,7 @@ package com.sanPatel.expensetracker.Database.SqliteDatabase;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -40,5 +41,10 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(USER_TABLE_NAME, null,contentValues);
         db.close();
         return result != -1;
+    }
+
+    public Cursor getUserDetails() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("Select * from "+USER_TABLE_NAME,null);
     }
 }
