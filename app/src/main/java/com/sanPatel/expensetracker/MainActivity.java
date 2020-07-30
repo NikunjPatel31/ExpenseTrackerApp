@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (mAuth.getCurrentUser() == null) {
             // there is no user. navigate to the login screen.
-            Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();

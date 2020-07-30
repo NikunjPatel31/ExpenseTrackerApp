@@ -47,4 +47,14 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("Select * from "+USER_TABLE_NAME,null);
     }
+
+    public boolean updateUserInfor(String firstName, String lastName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("first_name",firstName);
+        contentValues.put("last_name",lastName);
+        long result = db.update(USER_TABLE_NAME,contentValues,null,null);
+        db.close();
+        return result != -1;
+    }
 }
