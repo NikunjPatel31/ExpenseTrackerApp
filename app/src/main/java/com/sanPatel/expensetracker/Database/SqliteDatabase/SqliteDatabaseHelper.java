@@ -57,4 +57,13 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
+
+    public boolean updateUserPhoto(byte[] userPhoto) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("photo",userPhoto);
+        long result = db.update(USER_TABLE_NAME, contentValues, null, null);
+        db.close();
+        return result != 1;
+    }
 }

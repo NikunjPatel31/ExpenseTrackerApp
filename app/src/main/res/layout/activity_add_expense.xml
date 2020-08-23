@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddExpenseActivity"
+    android:background="@color/colorActivityBackground">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_add_expense"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:title="Add Entry"
+        app:titleTextColor="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/text_view_amount_heading"
+        android:text="Amount"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/expenseHeadingTextView"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_add_expense"/>
+
+    <EditText
+        android:id="@+id/edit_text_amount_value"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_amount_heading"
+        android:inputType="number"
+        android:hint="Enter amount"
+        style="@style/expenseEdittext"/>
+
+    <TextView
+        android:id="@+id/text_view_expense_title_heading"
+        style="@style/expenseHeadingTextView"
+        android:text="Expense/Income made for"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_amount_value"/>
+
+    <EditText
+        android:id="@+id/edit_text_expense_title_value"
+        style="@style/expenseEdittext"
+        android:hint="Expense/income made on"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_expense_title_heading"/>
+
+    <TextView
+        android:id="@+id/text_view_expense_desc_heading"
+        style="@style/expenseHeadingTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_expense_title_value"
+        android:text="Expense/Income Description"/>
+
+    <EditText
+        android:id="@+id/edit_text_expense_desc_value"
+        style="@style/expenseEdittext"
+        android:hint="Expense/income description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:maxLines="4"
+        app:layout_constraintTop_toBottomOf="@id/text_view_expense_desc_heading"/>
+
+    <Button
+        android:onClick="addEntry"
+        style="@style/authenticationButton"
+        android:text="Add"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_expense_desc_value"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

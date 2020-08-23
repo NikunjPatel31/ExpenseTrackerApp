@@ -12,14 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AccountSetting.SettingActivity"></activity>
+        <activity android:name=".AddExpenseActivity"></activity>
+        <activity android:name=".AccountSetting.SettingActivity" />
         <activity
             android:name=".Authentication.LoginActivity"
             android:launchMode="singleTask" />
         <activity
             android:name=".Authentication.SignInActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".HomeScreenActivity" android:launchMode="singleTask"/>
+        <activity
+            android:name=".HomeScreenActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

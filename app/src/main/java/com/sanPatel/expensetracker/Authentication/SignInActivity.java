@@ -66,7 +66,7 @@ public class SignInActivity extends AppCompatActivity {
     private Uri imageUri;
 
     //final variables
-    private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
+    private final int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
 
     //flag variables
     private boolean photoSelected = false;
@@ -211,13 +211,9 @@ public class SignInActivity extends AppCompatActivity {
             // image is selected...
             if (data != null) {
                 imageUri = data.getData();
-                CropImage.activity(imageUri)
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(1,1)
-                        .start(this);
             } else {
-                // there is some problem in selecting image from the gallery.
-                Toast.makeText(this, "Error in selecting image.", Toast.LENGTH_SHORT).show();
+                // photo is not selected.
+                photoSelected = false;
             }
         }
 

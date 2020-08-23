@@ -6,4 +6,9 @@
         android:title="Edit Profile"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/menu_change_photo"
+        android:title="Change Photo"
+        app:showAsAction="never"/>
+
 </menu>
