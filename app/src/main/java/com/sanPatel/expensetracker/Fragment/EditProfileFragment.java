@@ -2,6 +2,8 @@ package com.sanPatel.expensetracker.Fragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,6 +27,8 @@ import com.sanPatel.expensetracker.AccountSetting.SettingActivity;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.R;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class EditProfileFragment extends DialogFragment {
 

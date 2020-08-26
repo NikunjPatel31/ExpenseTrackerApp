@@ -145,7 +145,6 @@ public class HomeScreenActivity extends AppCompatActivity {
                     } else {
                         // show image.
                         isExpense = false;
-
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -159,6 +158,8 @@ public class HomeScreenActivity extends AppCompatActivity {
                 myExpenseRecyclerView.setAdapter(adapter);
                 if (!isExpense) {
                     imgViewNoExpense.setVisibility(View.VISIBLE);
+                } else {
+                    imgViewNoExpense.setVisibility(View.INVISIBLE);
                 }
             }
         });

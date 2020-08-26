@@ -4,12 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +25,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
+import com.sanPatel.expensetracker.Authentication.LoginActivity;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.User;
 import com.sanPatel.expensetracker.Fragment.EditProfileFragment;
@@ -35,13 +43,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingActivity extends AppCompatActivity implements EditProfileFragment.ButtonClickListener {
 
-
-    private static final String TAG = "SettingActivity";
-
     // widgets
     private Toolbar toolbar;
     private CircleImageView cirImgPhoto;
     private TextView tvUserName, tvEmail, tvPassword;
+    private CoordinatorLayout coordinatorLayout;
 
     // data variable
     private User user = new User();
@@ -50,12 +56,41 @@ public class SettingActivity extends AppCompatActivity implements EditProfileFra
     // static variable
     private final int GALLERY_REQUEST_CODE = 1;
 
+    // flag variable
+    private boolean isConnected = false;
+
+    // firebase
+    private FirebaseAuth mAuth;
+
+    public void logout(View view) {
+        // this method will logout user.
+        if (isConnected) {
+            mAuth.signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            // show snackbar.
+            final Snackbar snackbar = Snackbar.make(coordinatorLayout,"No Internet Connection",Snackbar.LENGTH_SHORT)
+                    .setActionTextColor(Color.YELLOW)
+                    .setAction("Ok", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            snackbar.show();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
         initializeWidgets();
+        initializeFirebaseInstance();
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -71,6 +106,20 @@ public class SettingActivity extends AppCompatActivity implements EditProfileFra
         super.onResume();
         toolbar.setTitle("");
         getUserDetails();
+
+        isConnected = checkInternetConnectivity();
+    }
+
+    private boolean checkInternetConnectivity() {
+        // this method will check internet connectivity.
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return true;
+        }
+        else
+            return false;
     }
 
     @Override
@@ -84,7 +133,21 @@ public class SettingActivity extends AppCompatActivity implements EditProfileFra
         switch (item.getItemId()) {
             case R.id.menu_edit_profile:
                 //Toast.makeText(this, "Edit selected.", Toast.LENGTH_SHORT).show();
-                EditProfileFragment.display(getSupportFragmentManager());
+                if (isConnected) {
+                    EditProfileFragment.display(getSupportFragmentManager());
+                } else {
+                    // show snankbar
+                    final Snackbar snackbar = Snackbar.make(coordinatorLayout,"No Internet Connection",Snackbar.LENGTH_SHORT)
+                            .setActionTextColor(Color.YELLOW)
+                            .setAction("Ok", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            });
+                    snackbar.show();
+                }
+
                 break;
             case R.id.menu_change_photo:
                 changeProfilePhoto();
@@ -101,6 +164,12 @@ public class SettingActivity extends AppCompatActivity implements EditProfileFra
         tvEmail = findViewById(R.id.text_view_email_value);
         tvPassword = findViewById(R.id.text_view_password_value);
         cirImgPhoto = findViewById(R.id.circular_image_user_account);
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
+    }
+
+    private void initializeFirebaseInstance() {
+        // this method will initialize firebase instance.
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void changeProfilePhoto() {

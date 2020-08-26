@@ -106,6 +106,8 @@ public class ViewAllExpense extends AppCompatActivity {
                 if (!isExpense) {
                     // show image.
                     imgViewNoExpense.setVisibility(View.VISIBLE);
+                } else {
+                    imgViewNoExpense.setVisibility(View.INVISIBLE);
                 }
             }
         });
