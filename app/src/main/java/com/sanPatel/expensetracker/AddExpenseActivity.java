@@ -36,6 +36,7 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
         if (!result) {
             Toast.makeText(this, "Unable to delete.", Toast.LENGTH_SHORT).show();
         }
+        onBackPressed();
     }
 
     public void addEntry(View view) {
@@ -164,9 +165,8 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
                 }
             });
         }
-
-
         myAsyncTask.execute();
+        onBackPressed();
     }
 
 }
