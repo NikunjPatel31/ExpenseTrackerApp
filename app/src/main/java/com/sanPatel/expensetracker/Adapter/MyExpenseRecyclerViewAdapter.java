@@ -1,6 +1,7 @@
 package com.sanPatel.expensetracker.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.sanPatel.expensetracker.AddExpenseActivity;
 import com.sanPatel.expensetracker.Datas.Expense;
 import com.sanPatel.expensetracker.R;
 
@@ -35,7 +38,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyExpenseRecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyExpenseRecyclerViewHolder holder, final int position) {
         holder.setExpenseTitle(expenseList.get(position).getExpense_title());
         holder.setExpenseDesc(expenseList.get(position).getExpense_description());
         holder.setExpenseDate(new SimpleDateFormat("dd-MM-yyyy").format(expenseList.get(position).getExpense_date()));
@@ -49,6 +52,19 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
             holder.setExpenseAmount("- ₹"+Double.toString(expenseList.get(position).getExpense_amount()));
             holder.tvAmount.setTextColor(Color.RED);
         }
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // this method will take user to edit expense screen.
+                Intent intent = new Intent(context, AddExpenseActivity.class);
+                intent.putExtra("Activity","Edit_expense");
+                intent.putExtra("Expense_id",expenseList.get(position).getExpense_id());
+                intent.putExtra("Amount",expenseList.get(position).getExpense_amount());
+                intent.putExtra("Title",expenseList.get(position).getExpense_title());
+                intent.putExtra("Desc",expenseList.get(position).getExpense_description());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -59,12 +75,14 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
     public class MyExpenseRecyclerViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvTitle, tvAmount, tvDesc, tvDate;
+        private CardView parentLayout;
         public MyExpenseRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.text_view_title);
             tvAmount = itemView.findViewById(R.id.text_view_amount);
             tvDate = itemView.findViewById(R.id.text_view_date);
             tvDesc = itemView.findViewById(R.id.text_view_desc);
+            parentLayout = itemView.findViewById(R.id.expense_item_parent_layout);
         }
 
         public void setExpenseTitle(String title) {

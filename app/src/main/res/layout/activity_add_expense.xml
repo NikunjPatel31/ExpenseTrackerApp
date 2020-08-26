@@ -17,7 +17,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
         app:title="Add Entry"
-        app:titleTextColor="@android:color/white"/>
+        app:titleTextColor="@android:color/white">
+
+        <ImageButton
+            android:id="@+id/image_button_delete_expense"
+            android:onClick="deleteExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/delete_forever_24"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:foregroundGravity="" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/text_view_amount_heading"
@@ -67,6 +80,7 @@
         app:layout_constraintTop_toBottomOf="@id/text_view_expense_desc_heading"/>
 
     <Button
+        android:id="@+id/button_add_expense"
         android:onClick="addEntry"
         style="@style/authenticationButton"
         android:text="Add"
