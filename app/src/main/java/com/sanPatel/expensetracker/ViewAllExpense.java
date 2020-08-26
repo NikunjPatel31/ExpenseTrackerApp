@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.sanPatel.expensetracker.Adapter.MyExpenseRecyclerViewAdapter;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
@@ -21,11 +22,14 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class ViewAllExpense extends AppCompatActivity {
-
+    // widgets
     private RecyclerView myExpenseRecyclerView;
     private Toolbar toolbar;
+    private ImageView imgViewNoExpense;
 
     private SqliteDatabaseHelper databaseHelper;
+
+    private boolean isExpense = false;
 
     private MyAsyncTask myAsyncTask;
     private ArrayList<Expense> expenseList;
@@ -55,6 +59,7 @@ public class ViewAllExpense extends AppCompatActivity {
         // this method will initialize all widgets.
         myExpenseRecyclerView = findViewById(R.id.recycler_view_my_expense);
         toolbar = findViewById(R.id.toolbar_view_all_expense);
+        imgViewNoExpense = findViewById(R.id.image_view_no_expense_image);
     }
 
     @Override
@@ -75,13 +80,18 @@ public class ViewAllExpense extends AppCompatActivity {
                 cursor = databaseHelper.getAllExpense();
                 expenseList = new ArrayList<>();
                 try {
-                    while (cursor.moveToNext()) {
-                        expenseList.add(new Expense(cursor.getInt(0),
-                                cursor.getString(1),
-                                cursor.getString(2),
-                                cursor.getLong(3),
-                                cursor.getInt(6),
-                                new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(4))));
+                    if (cursor.getCount() > 0) {
+                        isExpense = true;
+                        while (cursor.moveToNext()) {
+                            expenseList.add(new Expense(cursor.getInt(0),
+                                    cursor.getString(1),
+                                    cursor.getString(2),
+                                    cursor.getLong(3),
+                                    cursor.getInt(6),
+                                    new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(4))));
+                        }
+                    } else {
+                        isExpense = false;
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -93,6 +103,10 @@ public class ViewAllExpense extends AppCompatActivity {
                 adapter = new MyExpenseRecyclerViewAdapter(expenseList, getApplicationContext());
 
                 myExpenseRecyclerView.setAdapter(adapter);
+                if (!isExpense) {
+                    // show image.
+                    imgViewNoExpense.setVisibility(View.VISIBLE);
+                }
             }
         });
         myAsyncTask.execute();
