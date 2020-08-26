@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +29,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     // widgets.
     private FloatingActionButton fabSetting, fabAddExpense, fabViewExpenses;
     private RecyclerView myExpenseRecyclerView;
+    private TextView tvIncomeAmount, tvExpenseAmount;
 
     // animation.
     private Animation fabOpen, fabClose;
@@ -103,6 +105,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getLatestTransaction();
+        gettotalAmount();
     }
 
     private void initializeWidgets() {
@@ -111,6 +114,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         fabAddExpense = findViewById(R.id.fab_add_expense);
         fabViewExpenses = findViewById(R.id.fab_view_expense);
         myExpenseRecyclerView = findViewById(R.id.recycler_view_latest_transactions);
+        tvIncomeAmount = findViewById(R.id.text_view_gained_amount_value);
+        tvExpenseAmount = findViewById(R.id.text_view_spend_amount_value);
     }
 
     private void getLatestTransaction() {
@@ -127,7 +132,7 @@ public class HomeScreenActivity extends AppCompatActivity {
                         expenseList.add(new Expense(cursor.getInt(0),
                                 cursor.getString(1),
                                 cursor.getString(2),
-                                cursor.getLong(3),
+                                cursor.getDouble(3),
                                 cursor.getInt(6),
                                 new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(4))));
                     }
@@ -141,6 +146,40 @@ public class HomeScreenActivity extends AppCompatActivity {
                 adapter = new MyExpenseRecyclerViewAdapter(expenseList, getApplicationContext());
 
                 myExpenseRecyclerView.setAdapter(adapter);
+            }
+        });
+        myAsyncTask.execute();
+    }
+
+    private void gettotalAmount() {
+        // this method will get expense and income amount.
+        // income amount
+        final double[] incomeAmount = {0};
+        // expense amount
+        final double[] expenseAmount = {0};
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
+            @Override
+            public void setBackgroundTask() {
+                SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                Cursor cursor = databaseHelper.getAmount(0);
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        incomeAmount[0] += cursor.getDouble(0);
+                    }
+                }
+                    cursor = databaseHelper.getAmount(1);
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        expenseAmount[0] += cursor.getDouble(0);
+                    }
+                }
+            }
+
+            @Override
+            public void setPostExecuteTask() {
+                tvIncomeAmount.setText("₹ "+Double.toString(incomeAmount[0]));
+                tvExpenseAmount.setText("₹ "+Double.toString(expenseAmount[0]));
             }
         });
         myAsyncTask.execute();

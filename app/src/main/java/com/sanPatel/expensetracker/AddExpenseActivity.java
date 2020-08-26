@@ -43,7 +43,6 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,str);
 
         if (validateFields()) {
-
             EntryCategoryDialog dialog = new EntryCategoryDialog();
             dialog.setCancelable(false);
             dialog.show(getSupportFragmentManager(),"Category dialog box");

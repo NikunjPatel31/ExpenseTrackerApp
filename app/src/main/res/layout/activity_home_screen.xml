@@ -11,22 +11,26 @@
         android:id="@+id/constraint_layout_topbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="25dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/colorPrimary"
+        android:paddingStart="15dp"
+        android:paddingTop="25dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorPrimary">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryLight"
             app:cardCornerRadius="8dp"
-            app:contentPadding="15dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:cardElevation="0dp"
+            app:contentPadding="13dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -43,37 +47,59 @@
 
                 <TextView
                     android:id="@+id/text_view_gained_amount_value"
-                    android:text="₹ 10,000"
-                    app:layout_constraintStart_toEndOf="@id/text_view_gained_amount"
-                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/homeScreentopbarTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
                     android:layout_marginStart="5dp"
-                    style="@style/homeScreentopbarTextView"/>
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="₹ 0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@id/text_view_gained_amount"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <RelativeLayout
                     android:id="@+id/relative_layout_vertical_line"
-                    android:layout_width="3dp"
-                    android:layout_height="22dp"
-                    app:layout_constraintStart_toEndOf="@id/text_view_gained_amount_value"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="3dp"
                     android:background="@color/colorEdittextHint"
-                    android:layout_marginStart="10dp"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_gained_amount" />
 
                 <TextView
                     android:id="@+id/text_view_spend_amount"
+                    style="@style/homeScreentopbarTextView"
+                    android:layout_marginTop="5dp"
                     android:text="Spend :"
-                    app:layout_constraintStart_toEndOf="@id/relative_layout_vertical_line"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="10dp"
-                    style="@style/homeScreentopbarTextView"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/relative_layout_vertical_line"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                     android:id="@+id/text_view_spend_amount_value"
-                    android:text="₹ 4,000"
-                    app:layout_constraintStart_toEndOf="@id/text_view_spend_amount"
-                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/homeScreentopbarTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="17dp"
                     android:layout_marginStart="5dp"
-                    style="@style/homeScreentopbarTextView"/>
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="₹ 0"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@id/text_view_spend_amount"
+                    app:layout_constraintTop_toBottomOf="@id/relative_layout_vertical_line"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:layout_marginBottom="3dp"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

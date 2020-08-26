@@ -123,4 +123,10 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         int result = db.delete(EXPENSE_TABLE_NAME,"entry_id = ?",new String[] {String.valueOf(expense_id)});
         return result != 0;
     }
+
+    public Cursor getAmount(int type) {
+        // this method will fetch all the expense amount row.
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("Select expense_amount from "+EXPENSE_TABLE_NAME+" WHERE expense_type = "+type,null);
+    }
 }
