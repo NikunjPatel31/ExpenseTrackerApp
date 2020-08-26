@@ -22,6 +22,13 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "+USER_TABLE_NAME+" " +
                 "(user_id Text, first_name Text, last_name Text, email Text, photo BLOB)");
+        db.execSQL("CREATE TABLE "+EXPENSE_TABLE_NAME+"(entry_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "expense_title TEXT, " +
+                "expense_desc TEXT, " +
+                "expense_amonunt REAL, " +
+                "expense_date TEXT, " +
+                "expense_time_stamp TEXT, " +
+                "expense_type INTEGER)");
     }
 
     @Override
@@ -65,5 +72,26 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         long result = db.update(USER_TABLE_NAME, contentValues, null, null);
         db.close();
         return result != 1;
+    }
+
+    public boolean insertEntry(String title, String desc, double amount, String date, String time, boolean type) {
+        // this method will insert new entry in the database.
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("expense_title",title);
+        contentValues.put("expense_desc",desc);
+        contentValues.put("expense_amonunt",amount);
+        contentValues.put("expense_date",date);
+        contentValues.put("expense_time_stamp",time);
+        contentValues.put("expense_type",type);
+
+        long result = db.insert(EXPENSE_TABLE_NAME,null,contentValues);
+        db.close();
+        return result != -1;
+    }
+
+    public Cursor getAllExpense() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME,null);
     }
 }

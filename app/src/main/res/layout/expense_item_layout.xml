@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="0dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/expense_item_parent_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:layout_margin="7dp">
+
+            <TextView
+                android:id="@+id/text_view_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="Home Rent"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:fontFamily="@font/noto_sans_bold"/>
+
+            <TextView
+                android:id="@+id/text_view_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="+ ₹12000"
+                android:textSize="16dp"
+                android:fontFamily="@font/noto_sans_bold"
+                android:textColor="@color/colorIncomeAmount"
+                android:paddingTop="3dp"/>
+
+            <TextView
+                android:id="@+id/text_view_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/noto_sans_bold"
+                android:text="Paid via google pay"
+                android:textSize="15dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toStartOf="@+id/text_view_date"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_title" />
+
+            <TextView
+                android:id="@+id/text_view_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_amount"
+                android:text="25/8/2020"
+                android:textSize="16dp"
+                android:fontFamily="@font/noto_sans_bold"
+                android:textColor="@color/colorDarkGrey"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>

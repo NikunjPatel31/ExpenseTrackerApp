@@ -3,26 +3,25 @@ package com.sanPatel.expensetracker.Datas;
 import java.util.Date;
 
 public class Expense {
-    String expense_id, expense_title, expense_description;
+    String expense_title, expense_description;
     double expense_amount;
-    int expense_icon, expense_type;
+    int expense_icon, expense_type, expense_id;
     Date expense_date;
 
-    public Expense(String expense_id, String expense_title, String expense_description, double expense_amount, int expense_icon, int expense_type, Date expense_date) {
+    public Expense(int expense_id, String expense_title, String expense_description, double expense_amount, int expense_type, Date expense_date) {
         this.expense_id = expense_id;
         this.expense_title = expense_title;
         this.expense_description = expense_description;
         this.expense_amount = expense_amount;
-        this.expense_icon = expense_icon;
         this.expense_type = expense_type;
         this.expense_date = expense_date;
     }
 
-    public String getExpense_id() {
+    public int getExpense_id() {
         return expense_id;
     }
 
-    public void setExpense_id(String expense_id) {
+    public void setExpense_id(int expense_id) {
         this.expense_id = expense_id;
     }
 

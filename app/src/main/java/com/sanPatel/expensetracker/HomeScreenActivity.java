@@ -59,6 +59,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void viewExpense(View view) {
         // this method will handle click listener for fabViewExpense
+        startActivity(new Intent(getApplicationContext(), ViewAllExpense.class));
     }
 
     @Override

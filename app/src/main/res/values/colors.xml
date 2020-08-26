@@ -2,11 +2,15 @@
 <resources>
     <color name="colorPrimary">#4A3BD1</color>
     <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="colorActivityBackground">#F8FAFB</color>
+    <color name="colorAccent">#4A3BD1</color>
+    <color name="colorActivityBackground">#F6F6F6</color>
     <color name="colorHeading">#FFFFFF</color>
     <color name="colorEdittextHint">#CCFFFFFF</color>
     <color name="colorPrimaryLight">#5852D8</color>
+    <color name="colorIncomeAmount">#0A8F0F</color>
     <color name="colorGrey">#9C9999</color>
+    <color name="colorDarkGrey">#5E5D5D</color>
     <color name="colorAuthenticationButtonRipple">#8D96CC</color>
 </resources>
+
+    <!--F8FAFB-->
