@@ -36,4 +36,22 @@ public class FirebaseDBOperation {
             db.child("sync").setValue(cursor.getInt(7));
         }
     }
+
+    public void insertEntry(Cursor cursor) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        DatabaseReference db = databaseReference.child("Expense")
+                .child(mAuth.getUid())
+                .child(Integer.toString(cursor.getInt(0)));;
+
+        db.child("Title").setValue(cursor.getString(1));
+        db.child("Desc").setValue(cursor.getString(2));
+        db.child("Amount").setValue(cursor.getDouble(3));
+        db.child("Date").setValue(cursor.getString(4));
+        db.child("Time").setValue(cursor.getString(5));
+        db.child("Type").setValue(cursor.getInt(6));
+        db.child("sync").setValue(cursor.getInt(7));
+    }
 }

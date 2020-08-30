@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.sanPatel.expensetracker.Adapter.MyExpenseRecyclerViewAdapter;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
+import com.sanPatel.expensetracker.Database.Firebase.FirebaseDBOperation;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Expense;
 
@@ -54,9 +55,10 @@ public class ViewAllExpense extends AppCompatActivity {
         if (isNetworkConnected()) {
             // internet connectivity is available.
             if (cursor.getCount() > 0) {
-                Toast.makeText(this, ""+cursor.getCount(), Toast.LENGTH_SHORT).show();
                 while (cursor.moveToNext()) {
                     // sync entry data with firebase.
+                    FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                    firebaseDBOperation.insertEntry(cursor);
                 }
             }
         } else {
