@@ -146,4 +146,9 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync = 0",null);
     }
+
+    public Cursor getLastEntry() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" ORDER BY entry_id DESC LIMIT 1",null);
+    }
 }

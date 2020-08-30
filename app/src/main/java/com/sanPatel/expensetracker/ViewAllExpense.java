@@ -133,7 +133,7 @@ public class ViewAllExpense extends AppCompatActivity {
                             expenseList.add(new Expense(cursor.getInt(0),
                                     cursor.getString(1),
                                     cursor.getString(2),
-                                    cursor.getLong(3),
+                                    cursor.getDouble(3),
                                     cursor.getInt(6),
                                     new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(4))));
                         }

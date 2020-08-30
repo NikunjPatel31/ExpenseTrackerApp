@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
+import com.sanPatel.expensetracker.Database.Firebase.FirebaseDBOperation;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Fragment.EntryCategoryDialog;
 
@@ -143,7 +144,11 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
 
                 @Override
                 public void setPostExecuteTask() {
-
+                    //add data to firebase.
+                    if (isSynced == 1) {
+                        FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                        firebaseDBOperation.insertEntry();
+                    }
                 }
             });
         } else {
