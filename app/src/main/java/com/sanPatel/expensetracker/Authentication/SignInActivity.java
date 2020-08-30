@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
+import com.sanPatel.expensetracker.HomeScreenActivity;
 import com.sanPatel.expensetracker.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -264,6 +265,10 @@ public class SignInActivity extends AppCompatActivity {
                         @Override
                         public void setPostExecuteTask() {
                             // navigate to the home screen
+                            Intent intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
                         }
                     });
                     myAsyncTask.execute();

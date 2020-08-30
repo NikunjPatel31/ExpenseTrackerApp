@@ -17,7 +17,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
     private static final String EXPENSE_TABLE_NAME = "Expense";
 
     public SqliteDatabaseHelper(@Nullable Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
@@ -35,7 +35,9 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (newVersion > oldVersion) {
+            db.execSQL("ALTER TABLE "+EXPENSE_TABLE_NAME+ " ADD COLUMN sync INTEGER DEFAULT 0");
+        }
     }
 
     public boolean insertUserData(String user_id, String firstName, String lastName, String email, byte[] photo) {
@@ -76,7 +78,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return result != 1;
     }
 
-    public boolean insertEntry(String title, String desc, double amount, String date, String time, boolean type) {
+    public boolean insertEntry(String title, String desc, double amount, String date, String time, boolean type, int sync) {
         // this method will insert new entry in the database.
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -86,7 +88,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("expense_date",date);
         contentValues.put("expense_time_stamp",time);
         contentValues.put("expense_type",type);
-
+        contentValues.put("sync",sync);
         long result = db.insert(EXPENSE_TABLE_NAME,null,contentValues);
         db.close();
         return result != -1;
@@ -102,7 +104,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" ORDER BY entry_id DESC LIMIT 5",null);
     }
 
-    public boolean updateExpense(int expense_id,String title, String desc, double amount, String date, String time, boolean type) {
+    public boolean updateExpense(int expense_id,String title, String desc, double amount, String date, String time, boolean type, int sync) {
         // this method will edit expense.
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -112,7 +114,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("expense_date", date);
         contentValues.put("expense_time_stamp",time);
         contentValues.put("expense_type",type);
-
+        contentValues.put("sync",sync);
         long result = db.update(EXPENSE_TABLE_NAME, contentValues, "entry_id = ?", new String[] {String.valueOf(expense_id)});
         db.close();
         return result != -1;
@@ -128,5 +130,20 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         // this method will fetch all the expense amount row.
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("Select expense_amount from "+EXPENSE_TABLE_NAME+" WHERE expense_type = "+type,null);
+    }
+
+    public void deleteAllTableData() {
+        // this method will delete all the record from all the tables.
+        SQLiteDatabase db = getWritableDatabase();
+        long result = db.delete(USER_TABLE_NAME,null,null);
+        if (result != -1) {
+            db.delete(EXPENSE_TABLE_NAME,null,null);
+        }
+    }
+
+    public Cursor getRemainSync() {
+        // this method will check is the syncing of entries is remaining
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync = 0",null);
     }
 }

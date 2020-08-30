@@ -25,6 +25,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/poppins</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:textCursorDrawable">@null</item>
         <item name="android:textColor">@color/colorHeading</item>
         <item name="android:textColorHint">@color/colorEdittextHint</item>
         <item name="android:background">@drawable/edit_text_background</item>

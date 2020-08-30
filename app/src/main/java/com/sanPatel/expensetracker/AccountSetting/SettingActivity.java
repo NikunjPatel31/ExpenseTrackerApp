@@ -65,6 +65,9 @@ public class SettingActivity extends AppCompatActivity implements EditProfileFra
     public void logout(View view) {
         // this method will logout user.
         if (isConnected) {
+            // delete all the records in all the tables.
+            SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+            databaseHelper.deleteAllTableData();
             mAuth.signOut();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

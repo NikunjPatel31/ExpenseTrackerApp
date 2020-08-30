@@ -3,6 +3,9 @@ package com.sanPatel.expensetracker;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -27,7 +30,11 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
     private Button btnAdd;
     private ImageButton imgBtnDeleteExpense;
 
+    // instance variable
     private String amount, expenseTitle, expenseDesc;
+
+    // flag variable
+    private int isSynced = 0;
 
     public void deleteExpense(View view) {
         // this method will delete expense
@@ -126,7 +133,12 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
                             Locale.getDefault()).format(new Date());
 
                     SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
-                    databaseHelper.insertEntry(expenseTitle, expenseDesc, Double.parseDouble(amount),currentDate,currentTime, selectedPosition != 0);
+                    if (isNetworkConnected()) {
+                        isSynced = 1;
+                    } else {
+                        isSynced = 0;
+                    }
+                    databaseHelper.insertEntry(expenseTitle, expenseDesc, Double.parseDouble(amount),currentDate,currentTime, selectedPosition != 0, isSynced);
                 }
 
                 @Override
@@ -146,13 +158,19 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
                             Locale.getDefault()).format(new Date());
 
                     SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                    if (isNetworkConnected()) {
+                        isSynced = 1;
+                    } else {
+                        isSynced = 0;
+                    }
                     boolean result = databaseHelper.updateExpense(getIntent().getIntExtra("Expense_id",0),
                             expenseTitle,
                             expenseDesc,
                             Double.parseDouble(amount),
                             currentDate,
                             currentTime,
-                            selectedPosition != 0);
+                            selectedPosition != 0,
+                            isSynced);
 
                     if (!result) {
                         Toast.makeText(AddExpenseActivity.this, "Unable to change.", Toast.LENGTH_SHORT).show();
@@ -167,6 +185,12 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
         }
         myAsyncTask.execute();
         onBackPressed();
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
 }
