@@ -96,12 +96,12 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllExpense() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME,null);
+        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync != 2",null);
     }
 
     public Cursor getLatestTransaction() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" ORDER BY entry_id DESC LIMIT 5",null);
+        return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" WHERE sync != 2 ORDER BY entry_id DESC LIMIT 5",null);
     }
 
     public boolean updateExpense(int expense_id,String title, String desc, double amount, String date, String time, boolean type, int sync) {
@@ -144,7 +144,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
     public Cursor getRemainSync() {
         // this method will check is the syncing of entries is remaining
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync = 0",null);
+        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync = 0 OR 2",null);
     }
 
     public Cursor getLastEntry() {

@@ -39,10 +39,17 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
 
     public void deleteExpense(View view) {
         // this method will delete expense
-        SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
-        boolean result = databaseHelper.deleteExpense(getIntent().getIntExtra("Expense_id",0));
-        if (!result) {
-            Toast.makeText(this, "Unable to delete.", Toast.LENGTH_SHORT).show();
+        if (isNetworkConnected()) {
+            FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+            firebaseDBOperation.deleteExpense(getIntent().getIntExtra("Expense_id",0));
+            SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+            boolean result = databaseHelper.deleteExpense(getIntent().getIntExtra("Expense_id", 0));
+            if (!result) {
+                Toast.makeText(this, "Unable to delete.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+            databaseHelper.updateSyncValue(getIntent().getIntExtra("Expense_id", 0),2);
         }
         onBackPressed();
     }

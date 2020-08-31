@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class ViewAllExpense extends AppCompatActivity {
-
-    private static final String TAG = "ViewAllExpense";
     
     // widgets
     private RecyclerView myExpenseRecyclerView;
@@ -57,9 +55,17 @@ public class ViewAllExpense extends AppCompatActivity {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     // sync entry data with firebase.
-                    FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
-                    firebaseDBOperation.insertEntry(cursor);
-                    databaseHelper.updateSyncValue(cursor.getInt(0),1);
+                    if (cursor.getInt(7) == 0) {
+                        // push record to firebase
+                        FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                        firebaseDBOperation.insertEntry(cursor);
+                        databaseHelper.updateSyncValue(cursor.getInt(0),1);
+                    } else if (cursor.getInt(7) == 2){
+                        // delete record from firebase and then delete from sqlite.
+                        FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                        firebaseDBOperation.deleteExpense(cursor.getInt(0));
+                        databaseHelper.deleteExpense(cursor.getInt(0));
+                    }
                 }
             }
             btnSync.setEnabled(false);

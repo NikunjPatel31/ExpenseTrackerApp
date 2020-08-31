@@ -1,8 +1,16 @@
 package com.sanPatel.expensetracker.Database.Firebase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -13,6 +21,7 @@ public class FirebaseDBOperation {
     public FirebaseDBOperation(Context context) {
         this.context = context;
     }
+
     public void insertEntry() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(context);
@@ -53,5 +62,22 @@ public class FirebaseDBOperation {
         db.child("Time").setValue(cursor.getString(5));
         db.child("Type").setValue(cursor.getInt(6));
         db.child("sync").setValue(cursor.getInt(7));
+    }
+
+    public void deleteExpense(int expense_id) {
+        // this method will delete expense from firebase.
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                .getReference().child("Expense").child(mAuth.getUid()).child(Integer.toString(expense_id));
+
+        databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
     }
 }
