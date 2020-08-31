@@ -151,4 +151,20 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" ORDER BY entry_id DESC LIMIT 1",null);
     }
+
+    public boolean updateSyncValue(int expense_id, int sync) {
+        // this method will update sync value of expense_id
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("sync",sync);
+        long result = db.update(EXPENSE_TABLE_NAME,contentValues,"entry_id = ?",new String[] {String.valueOf(expense_id)});
+        db.close();
+        return result != -1;
+    }
+
+    public Cursor getExpenseDetail(int expense_id) {
+        // this method will return expense detail of expense_id
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" WHERE entry_id = "+expense_id,null);
+    }
 }

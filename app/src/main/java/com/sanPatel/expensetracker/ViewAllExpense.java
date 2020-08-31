@@ -59,8 +59,10 @@ public class ViewAllExpense extends AppCompatActivity {
                     // sync entry data with firebase.
                     FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
                     firebaseDBOperation.insertEntry(cursor);
+                    databaseHelper.updateSyncValue(cursor.getInt(0),1);
                 }
             }
+            btnSync.setEnabled(false);
         } else {
             // internet connectivity is not available.
             final Snackbar snackbar = Snackbar.make(coordinatorLayout,"No Internet Connection",Snackbar.LENGTH_SHORT)

@@ -176,15 +176,17 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
                             currentTime,
                             selectedPosition != 0,
                             isSynced);
-
-                    if (!result) {
-                        Toast.makeText(AddExpenseActivity.this, "Unable to change.", Toast.LENGTH_SHORT).show();
-                    }
-
                 }
 
                 @Override
                 public void setPostExecuteTask() {
+                    if (isSynced == 1) {
+                        FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                        SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                        Cursor cursor = databaseHelper.getExpenseDetail(getIntent().getIntExtra("Expense_id",0));
+                        cursor.moveToNext();
+                        firebaseDBOperation.insertEntry(cursor);
+                    }
                 }
             });
         }
