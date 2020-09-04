@@ -3,10 +3,21 @@ package com.sanPatel.expensetracker.Datas;
 import java.util.Date;
 
 public class Expense {
-    String expense_title, expense_description;
+    String expense_title, expense_description, time;
     double expense_amount;
-    int expense_icon, expense_type, expense_id;
+    int expense_icon, expense_type, expense_id, sync;
     Date expense_date;
+
+    public Expense(int expense_id, String expense_title, String expense_description, double expense_amount, int expense_type, Date expense_date, int sync, String time) {
+        this.expense_id = expense_id;
+        this.expense_title = expense_title;
+        this.expense_description = expense_description;
+        this.expense_amount = expense_amount;
+        this.expense_type = expense_type;
+        this.expense_date = expense_date;
+        this.sync = sync;
+        this.time = time;
+    }
 
     public Expense(int expense_id, String expense_title, String expense_description, double expense_amount, int expense_type, Date expense_date) {
         this.expense_id = expense_id;
@@ -15,6 +26,10 @@ public class Expense {
         this.expense_amount = expense_amount;
         this.expense_type = expense_type;
         this.expense_date = expense_date;
+    }
+
+    public Expense() {
+
     }
 
     public int getExpense_id() {
@@ -71,5 +86,21 @@ public class Expense {
 
     public void setExpense_date(Date expense_date) {
         this.expense_date = expense_date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public int getSync() {
+        return sync;
+    }
+
+    public void setSync(int sync) {
+        this.sync = sync;
     }
 }

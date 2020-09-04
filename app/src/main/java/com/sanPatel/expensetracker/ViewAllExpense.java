@@ -121,6 +121,7 @@ public class ViewAllExpense extends AppCompatActivity {
         cursor = databaseHelper.getRemainSync();
         if (cursor.getCount() > 0) {
             // entries are available for sync.
+            Toast.makeText(this, ""+cursor.getCount(), Toast.LENGTH_SHORT).show();
             btnSync.setEnabled(true);
         }
     }

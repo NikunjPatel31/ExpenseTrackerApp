@@ -1,22 +1,30 @@
 package com.sanPatel.expensetracker.Database.Firebase;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
+import com.sanPatel.expensetracker.Datas.Expense;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class FirebaseDBOperation {
+    private static final String TAG = "FirebaseDBOperation";
     private Context context;
     public FirebaseDBOperation(Context context) {
         this.context = context;

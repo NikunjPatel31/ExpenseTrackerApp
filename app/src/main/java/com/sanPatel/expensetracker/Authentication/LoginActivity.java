@@ -1,11 +1,13 @@
 package com.sanPatel.expensetracker.Authentication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -20,16 +22,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sanPatel.expensetracker.Database.Firebase.FirebaseDBOperation;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
+import com.sanPatel.expensetracker.Datas.Expense;
 import com.sanPatel.expensetracker.HomeScreenActivity;
 import com.sanPatel.expensetracker.R;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginActivity";
     // widgets
     private LinearLayout linearLayoutSignIn;
     private EditText etEmail, etPassword;
@@ -59,6 +69,12 @@ public class LoginActivity extends AppCompatActivity {
         initializeWidgets();
         initializeFirebaseWidgets();
         widgetsClickListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
     }
 
     private void initializeWidgets() {
@@ -148,10 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                         snapshot.child("Last_name").getValue().toString(),
                         email,
                         null);
-                Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                retrieveExpense();
             }
 
             @Override
@@ -159,5 +172,94 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void retrieveExpense() {
+        final int[] count = {0};
+        final int counter[] = {0};
+        final ArrayList<Expense> expensesList = new ArrayList<>();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                .child("Expense").child(mAuth.getUid());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                count[0] = (int) snapshot.getChildrenCount();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if (snapshot.exists()) {
+                    counter[0]++;
+                    try {
+                        Expense expense = new Expense();
+                        expense.setExpense_id(Integer.parseInt(snapshot.getKey()));
+                        expense.setExpense_title(snapshot.child("Title").getValue().toString());
+                        expense.setExpense_description(snapshot.child("Desc").getValue().toString());
+                        expense.setExpense_amount(Double.parseDouble(snapshot.child("Amount").getValue().toString()));
+                        expense.setExpense_date(new SimpleDateFormat("dd-MM-yyyy").parse(snapshot.child("Date").getValue().toString()));
+                        expense.setExpense_type(Integer.parseInt(snapshot.child("Type").getValue().toString()));
+                        expense.setTime(snapshot.child("Time").getValue().toString());
+                        expense.setSync(Integer.parseInt(snapshot.child("sync").getValue().toString()));
+
+                        expensesList.add(expense);
+                        boolean expense_type;
+                        if (expense.getExpense_type() == 0) {
+                            expense_type = false;
+                        } else {
+                            expense_type = true;
+                        }
+
+                        SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                        databaseHelper.insertEntry(expense.getExpense_title(),
+                                expense.getExpense_description(),
+                                expense.getExpense_amount(),
+                                new SimpleDateFormat("dd-MM-yyyy").format(expense.getExpense_date()),
+                                expense.getTime(),
+                                expense_type,
+                                expense.getSync());
+
+                        if (counter[0] == 5) {
+                            Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } catch (Exception e) {
+
+                    }
+                } else {
+                    Log.d(TAG, "onDataChange: does not exists");
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        databaseReference.addChildEventListener(childEventListener);
     }
 }

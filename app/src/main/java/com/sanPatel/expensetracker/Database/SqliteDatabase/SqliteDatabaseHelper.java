@@ -144,7 +144,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
     public Cursor getRemainSync() {
         // this method will check is the syncing of entries is remaining
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync = 0 OR 2",null);
+        return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync = 0 OR sync = 2",null);
     }
 
     public Cursor getLastEntry() {
