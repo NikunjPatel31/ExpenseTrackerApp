@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,6 +53,8 @@ public class SignInActivity extends AppCompatActivity {
     private LinearLayout linearLayoutLogin;
     private EditText etFirstName, etLastName , etEmail, etPassword;
     private CircleImageView cirImgProfilePhoto;
+    private Button btnSignIn;
+    private ContentLoadingProgressBar contentLoadingProgressBar;
 
     //firebase
     private FirebaseAuth mAuth;
@@ -77,6 +81,8 @@ public class SignInActivity extends AppCompatActivity {
         // this handle the click listener for sign In button
         if (storagePermission) {
             if (validateFields()) {
+                btnSignIn.setVisibility(View.INVISIBLE);
+                contentLoadingProgressBar.setVisibility(View.VISIBLE);
                 signIn();
             }
         } else {
@@ -123,6 +129,8 @@ public class SignInActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.edit_text_email);
         etPassword = findViewById(R.id.edit_text_password);
         cirImgProfilePhoto = findViewById(R.id.circular_image_user_account);
+        btnSignIn = findViewById(R.id.button_sign_in);
+        contentLoadingProgressBar = findViewById(R.id.content_loading_progress_bar_sign_in);
     }
 
     private void initializeFirebaseinstance() {
@@ -274,12 +282,16 @@ public class SignInActivity extends AppCompatActivity {
                     myAsyncTask.execute();
                 } else {
                     // error in creating new account.
+                    contentLoadingProgressBar.setVisibility(View.INVISIBLE);
+                    btnSignIn.setVisibility(View.VISIBLE);
                     Toast.makeText(SignInActivity.this, "Error in creating account.", Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                contentLoadingProgressBar.setVisibility(View.INVISIBLE);
+                btnSignIn.setVisibility(View.VISIBLE);
                 if (e instanceof FirebaseAuthInvalidUserException) {
                     String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
 

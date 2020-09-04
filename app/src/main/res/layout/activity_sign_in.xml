@@ -75,6 +75,18 @@
         style="@style/authenticationButton"
         android:onClick="signIn"/>
 
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/content_loading_progress_bar_sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:theme="@style/ContentLoadingProgress"
+            style="?android:attr/progressBarStyle"
+            app:layout_constraintStart_toStartOf="@id/button_sign_in"
+            app:layout_constraintEnd_toEndOf="@id/button_sign_in"
+            app:layout_constraintTop_toTopOf="@id/button_sign_in"
+            app:layout_constraintBottom_toBottomOf="@id/button_sign_in"/>
+
     <LinearLayout
         android:id="@+id/linear_layout_login"
         android:layout_width="wrap_content"

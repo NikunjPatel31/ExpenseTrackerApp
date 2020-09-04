@@ -3,6 +3,7 @@ package com.sanPatel.expensetracker.Authentication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.ContentLoadingProgressBar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -43,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     // widgets
     private LinearLayout linearLayoutSignIn;
     private EditText etEmail, etPassword;
+    private Button btnLogin;
+    private ContentLoadingProgressBar contentLoadingProgressBar;
 
     // firebase instance
     FirebaseAuth mAuth;
@@ -53,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
     public void login(View view) {
         // this method will handle login button click listener
         if (validateFields()) {
+            btnLogin.setVisibility(View.INVISIBLE);
+            contentLoadingProgressBar.setVisibility(View.VISIBLE);
             loginUser();
         }
     }
@@ -82,6 +88,8 @@ public class LoginActivity extends AppCompatActivity {
         linearLayoutSignIn = findViewById(R.id.linear_layout_sign_in);
         etEmail = findViewById(R.id.edit_text_email);
         etPassword = findViewById(R.id.edit_text_password);
+        btnLogin = findViewById(R.id.button_login);
+        contentLoadingProgressBar = findViewById(R.id.content_loading_progress_bar_login);
     }
 
     private void initializeFirebaseWidgets() {
@@ -130,6 +138,8 @@ public class LoginActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                contentLoadingProgressBar.setVisibility(View.INVISIBLE);
+                btnLogin.setVisibility(View.VISIBLE);
                 if (e instanceof FirebaseAuthInvalidUserException) {
                     String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
 

@@ -132,4 +132,9 @@
         <item name="android:maxLines">1</item>
         <item name="fontFamily">@font/poppins_medium</item>
     </style>
+
+    <style name="ContentLoadingProgress">
+        <item name="colorAccent">@color/colorActivityBackground</item>
+    </style>
+
 </resources>
