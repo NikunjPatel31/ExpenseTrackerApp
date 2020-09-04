@@ -179,20 +179,10 @@ public class LoginActivity extends AppCompatActivity {
         final int counter[] = {0};
         final ArrayList<Expense> expensesList = new ArrayList<>();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
                 .child("Expense").child(mAuth.getUid());
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                count[0] = (int) snapshot.getChildrenCount();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        ChildEventListener childEventListener = new ChildEventListener() {
+        final ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.exists()) {
@@ -225,11 +215,13 @@ public class LoginActivity extends AppCompatActivity {
                                 expense_type,
                                 expense.getSync());
 
-                        if (counter[0] == 5) {
+                        if (counter[0] == count[0]) {
                             Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             finish();
+                        } else {
+                            Log.d(TAG, "onChildAdded: counter: "+counter[0]+"   count: "+count[0]);
                         }
                     } catch (Exception e) {
 
@@ -260,6 +252,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        databaseReference.addChildEventListener(childEventListener);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                count[0] = (int) snapshot.getChildrenCount();
+                databaseReference.addChildEventListener(childEventListener);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

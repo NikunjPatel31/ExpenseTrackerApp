@@ -30,7 +30,8 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
                 "expense_amount REAL, " +
                 "expense_date TEXT, " +
                 "expense_time_stamp TEXT, " +
-                "expense_type INTEGER)");
+                "expense_type INTEGER," +
+                "sync INTEGER)");
     }
 
     @Override
