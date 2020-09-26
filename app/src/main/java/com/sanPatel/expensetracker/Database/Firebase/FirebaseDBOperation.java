@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Expense;
+import com.sanPatel.expensetracker.Datas.Wallet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,5 +88,18 @@ public class FirebaseDBOperation {
             public void onFailure(@NonNull Exception e) {
             }
         });
+    }
+
+    public void insertWallet(Cursor cursor) {
+        // this method will insert wallet.
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                .getReference().child("Wallet").child(mAuth.getUid()).child(Integer.toString(cursor.getInt(0)));
+
+        databaseReference.child("Wallet_name").setValue(cursor.getString(1));
+        databaseReference.child("Wallet_initial_bal").setValue(cursor.getDouble(2));
+        databaseReference.child("Wallet_data").setValue(cursor.getString(3));
+        databaseReference.child("Wallet_time_stamp").setValue(cursor.getString(4));
+        databaseReference.child("Wallet_sync").setValue(cursor.getInt(5));
     }
 }

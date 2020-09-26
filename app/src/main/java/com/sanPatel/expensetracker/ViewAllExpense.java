@@ -57,9 +57,9 @@ public class ViewAllExpense extends AppCompatActivity {
                     // sync entry data with firebase.
                     if (cursor.getInt(7) == 0) {
                         // push record to firebase
+                        databaseHelper.updateSyncValue(cursor.getInt(0),1);
                         FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
                         firebaseDBOperation.insertEntry(cursor);
-                        databaseHelper.updateSyncValue(cursor.getInt(0),1);
                     } else if (cursor.getInt(7) == 2){
                         // delete record from firebase and then delete from sqlite.
                         FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());

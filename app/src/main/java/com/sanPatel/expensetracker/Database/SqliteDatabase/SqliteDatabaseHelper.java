@@ -15,9 +15,10 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ExpenseTrackerUserData.db";
     private static final String USER_TABLE_NAME = "User";
     private static final String EXPENSE_TABLE_NAME = "Expense";
+    private static final String WALLET_TABLE_NAME = "Wallet";
 
     public SqliteDatabaseHelper(@Nullable Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 3);
     }
 
     @Override
@@ -31,13 +32,33 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
                 "expense_date TEXT, " +
                 "expense_time_stamp TEXT, " +
                 "expense_type INTEGER," +
-                "sync INTEGER)");
+                "sync INTEGER," +
+                "wallet_id INTEGER DEFAULT -1)");
+        db.execSQL("CREATE TABLE "+WALLET_TABLE_NAME+" " +
+                "(wallet_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "wallet_name Text, " +
+                "wallet_initial_balance REAL, " +
+                "wallet_date TEXT," +
+                "wallet_time_stamp TEXT, " +
+                "wallet_sync INTEGER)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            db.execSQL("ALTER TABLE "+EXPENSE_TABLE_NAME+ " ADD COLUMN sync INTEGER DEFAULT 0");
+            if (oldVersion == 1) {
+                db.execSQL("ALTER TABLE " + EXPENSE_TABLE_NAME + " ADD COLUMN sync INTEGER DEFAULT 0");
+            }
+            if (oldVersion == 2) {
+                db.execSQL("ALTER TABLE " + EXPENSE_TABLE_NAME + " ADD COLUMN wallet_id INTEGER DEFAULT -1");
+                db.execSQL("CREATE TABLE "+WALLET_TABLE_NAME+" " +
+                        "(wallet_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "wallet_name Text, " +
+                        "wallet_initial_balance REAL, " +
+                        "wallet_date TEXT," +
+                        "wallet_time_stamp TEXT, " +
+                        "wallet_sync INTEGER DEFAULT 0)");
+            }
         }
     }
 
@@ -167,5 +188,25 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         // this method will return expense detail of expense_id
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" WHERE entry_id = "+expense_id,null);
+    }
+
+    public boolean insertWallet(String walletName, double initialBalance, String walletDate, String walletTime, int walletSync) {
+        // this method will insert wallet.
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("wallet_name",walletName);
+        contentValues.put("wallet_initial_balance", initialBalance);
+        contentValues.put("wallet_date", walletDate);
+        contentValues.put("wallet_time_stamp", walletTime);
+        contentValues.put("wallet_sync",walletSync);
+        long result = db.insert(WALLET_TABLE_NAME,null,contentValues);
+        db.close();
+        return result != -1;
+    }
+
+    public Cursor getLastWallet() {
+        // this method will fetch last wallet.
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM "+WALLET_TABLE_NAME+" ORDER BY wallet_id DESC LIMIT 1", null);
     }
 }

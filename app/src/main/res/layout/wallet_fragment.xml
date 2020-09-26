@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/material_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/colorPrimary"
+        app:title="Wallet"
+        app:titleTextColor="@color/colorHeading"
+        app:navigationIcon="@drawable/ic_baseline_close_24">
+
+        <Button
+            android:id="@+id/button_create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create"
+            android:textSize="18dp"
+            android:textColor="@color/colorHeading"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
+            android:background="?attr/selectableItemBackground" />
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <TextView
+        android:id="@+id/text_view_wallet_name"
+        android:text="Wallet name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/material_toolbar"
+        style="@style/editProfileDialogFragmentTextView"/>
+
+    <EditText
+        android:id="@+id/edit_text_wallet_name"
+        android:hint="Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_wallet_name"
+        style="@style/editProfileDialogFragmentEditText"/>
+
+    <TextView
+        android:id="@+id/text_view_initial_balance"
+        android:text="initial balance"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_wallet_name"
+        style="@style/editProfileDialogFragmentTextView"/>
+
+    <EditText
+        android:id="@+id/edit_text_initial_balance"
+        android:hint="Balance"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_initial_balance"
+        style="@style/editProfileDialogFragmentEditText"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

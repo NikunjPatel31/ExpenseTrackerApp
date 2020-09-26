@@ -20,12 +20,14 @@ import com.sanPatel.expensetracker.Adapter.MyExpenseRecyclerViewAdapter;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Expense;
+import com.sanPatel.expensetracker.Fragment.EditProfileFragment;
+import com.sanPatel.expensetracker.Fragment.WalletFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity{
 
     // widgets.
     private FloatingActionButton fabSetting, fabAddExpense, fabViewExpenses;
@@ -80,9 +82,10 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void addExpense(View view) {
         // this method will handle click listener for fabAddExpense
-        Intent intent = new Intent(getApplicationContext(), AddExpenseActivity.class);
-        intent.putExtra("Activity","Add_Expense");
-        startActivity(intent);
+        WalletFragment.display(getSupportFragmentManager());
+//        Intent intent = new Intent(getApplicationContext(), AddExpenseActivity.class);
+//        intent.putExtra("Activity","Add_Expense");
+//        startActivity(intent);
     }
 
     public void viewExpense(View view) {
