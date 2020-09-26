@@ -37,6 +37,13 @@ public class WalletFragment extends DialogFragment {
     private Button btnCreate;
     private EditText etWalletName, etInitialBalance;
 
+    public interface ButtonClickListener {
+        void onButtonClickListener(Wallet wallet);
+    }
+
+    // buttonClickedInterface
+    private static ButtonClickListener buttonClickListener;
+
     public static WalletFragment display(FragmentManager fragmentManager) {
         WalletFragment walletFragment = new WalletFragment();
         walletFragment.show(fragmentManager,TAG);
@@ -67,6 +74,12 @@ public class WalletFragment extends DialogFragment {
         initializeWidgets(view);
         widgetClickListener();
         return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        buttonClickListener = (ButtonClickListener) context;
     }
 
     private void initializeWidgets(View view) {
@@ -123,6 +136,30 @@ public class WalletFragment extends DialogFragment {
                         currentDate,
                         currentTime,
                         isSynced);
+
+                try {
+                    Cursor walletcursor = databaseHelper.getLastWallet();
+                    if (walletcursor.getCount() > 0) {
+                        walletcursor.moveToNext();
+                        buttonClickListener.onButtonClickListener(
+                                new Wallet(etWalletName.getText().toString(),
+                                        currentTime,
+                                        Double.parseDouble(etInitialBalance.getText().toString()),
+                                        new SimpleDateFormat("dd-MM-yyyy").parse(currentDate),
+                                        walletcursor.getInt(0),
+                                        isSynced));
+                    } else {
+                        buttonClickListener.onButtonClickListener(
+                                new Wallet(etWalletName.getText().toString(),
+                                        currentTime,
+                                        Double.parseDouble(etInitialBalance.getText().toString()),
+                                        new SimpleDateFormat("dd-MM-yyyy").parse(currentDate),
+                                        1,
+                                        isSynced));
+                    }
+                } catch (Exception e) {
+
+                }
 
                 if (isSynced == 1) {
                     Cursor cursor = databaseHelper.getLastWallet();

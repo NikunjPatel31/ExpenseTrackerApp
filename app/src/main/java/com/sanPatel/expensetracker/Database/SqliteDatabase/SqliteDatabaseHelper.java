@@ -209,4 +209,10 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM "+WALLET_TABLE_NAME+" ORDER BY wallet_id DESC LIMIT 1", null);
     }
+
+    public Cursor getAllWallet() {
+        // this method will fetch all the wallets.
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM "+ WALLET_TABLE_NAME,null);
+    }
 }

@@ -17,9 +17,11 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sanPatel.expensetracker.AccountSetting.SettingActivity;
 import com.sanPatel.expensetracker.Adapter.MyExpenseRecyclerViewAdapter;
+import com.sanPatel.expensetracker.Adapter.WalletRecyclerViewAdapter;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Expense;
+import com.sanPatel.expensetracker.Datas.Wallet;
 import com.sanPatel.expensetracker.Fragment.EditProfileFragment;
 import com.sanPatel.expensetracker.Fragment.WalletFragment;
 
@@ -27,12 +29,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class HomeScreenActivity extends AppCompatActivity{
+public class HomeScreenActivity extends AppCompatActivity implements WalletFragment.ButtonClickListener{
 
     // widgets.
     private FloatingActionButton fabSetting, fabAddExpense, fabViewExpenses;
-    private RecyclerView myExpenseRecyclerView;
-    private TextView tvIncomeAmount, tvExpenseAmount;
+    private RecyclerView myExpenseRecyclerView, walletRecyclerView;
+    //private TextView tvIncomeAmount, tvExpenseAmount;
     private ImageView imgViewNoExpense;
 
     // animation.
@@ -45,6 +47,8 @@ public class HomeScreenActivity extends AppCompatActivity{
     // instance variable
     private ArrayList<Expense> expenseList;
     private MyExpenseRecyclerViewAdapter adapter;
+    private ArrayList<Wallet> walletList;
+    private WalletRecyclerViewAdapter walletAdapter;
 
     public void viewAllExpense(View view) {
         // this method will show all the expense.
@@ -80,12 +84,15 @@ public class HomeScreenActivity extends AppCompatActivity{
         startActivity(new Intent(HomeScreenActivity.this, SettingActivity.class));
     }
 
+    public void addWallet(View view) {
+        WalletFragment.display(getSupportFragmentManager());
+    }
+
     public void addExpense(View view) {
         // this method will handle click listener for fabAddExpense
-        WalletFragment.display(getSupportFragmentManager());
-//        Intent intent = new Intent(getApplicationContext(), AddExpenseActivity.class);
-//        intent.putExtra("Activity","Add_Expense");
-//        startActivity(intent);
+        Intent intent = new Intent(getApplicationContext(), AddExpenseActivity.class);
+        intent.putExtra("Activity","Add_Expense");
+        startActivity(intent);
     }
 
     public void viewExpense(View view) {
@@ -105,11 +112,15 @@ public class HomeScreenActivity extends AppCompatActivity{
 
         myExpenseRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         myExpenseRecyclerView.setHasFixedSize(true);
+
+        walletRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, true));
+        walletRecyclerView.setHasFixedSize(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        getWallet();
         getLatestTransaction();
         gettotalAmount();
     }
@@ -120,9 +131,50 @@ public class HomeScreenActivity extends AppCompatActivity{
         fabAddExpense = findViewById(R.id.fab_add_expense);
         fabViewExpenses = findViewById(R.id.fab_view_expense);
         myExpenseRecyclerView = findViewById(R.id.recycler_view_latest_transactions);
-        tvIncomeAmount = findViewById(R.id.text_view_gained_amount_value);
-        tvExpenseAmount = findViewById(R.id.text_view_spend_amount_value);
+//        tvIncomeAmount = findViewById(R.id.text_view_gained_amount_value);
+//        tvExpenseAmount = findViewById(R.id.text_view_spend_amount_value);
         imgViewNoExpense = findViewById(R.id.image_view_no_expense_image);
+        walletRecyclerView = findViewById(R.id.recycler_view_wallet);
+    }
+
+    private void getWallet() {
+        // this method will fetch all wallets.
+        walletList = new ArrayList<>();
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
+            @Override
+            public void setBackgroundTask() {
+                SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                Cursor cursor = databaseHelper.getAllWallet();
+                try {
+                    if (cursor.getCount() > 0) {
+                        while (cursor.moveToNext()) {
+                            Wallet wallet = new Wallet();
+                            wallet.setWalletID(cursor.getInt(0));
+                            wallet.setWalletName(cursor.getString(1));
+                            wallet.setInitialBalance(cursor.getDouble(2));
+                            wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
+                            wallet.setWalletSync(cursor.getInt(4));
+
+                            walletList.add(wallet);
+                        }
+                    }
+
+
+                } catch (Exception e) {
+
+                }
+            }
+
+            @Override
+            public void setPostExecuteTask() {
+                //Toast.makeText(HomeScreenActivity.this, ""+walletList.size(), Toast.LENGTH_SHORT).show();
+                walletAdapter = new WalletRecyclerViewAdapter(walletList);
+                walletRecyclerView.setAdapter(walletAdapter);
+            }
+        });
+
+        myAsyncTask.execute();
     }
 
     private void getLatestTransaction() {
@@ -196,10 +248,16 @@ public class HomeScreenActivity extends AppCompatActivity{
 
             @Override
             public void setPostExecuteTask() {
-                tvIncomeAmount.setText("₹ "+Double.toString(incomeAmount[0]));
-                tvExpenseAmount.setText("₹ "+Double.toString(expenseAmount[0]));
+//                tvIncomeAmount.setText("₹ "+Double.toString(incomeAmount[0]));
+//                tvExpenseAmount.setText("₹ "+Double.toString(expenseAmount[0]));
             }
         });
         myAsyncTask.execute();
+    }
+
+    @Override
+    public void onButtonClickListener(Wallet wallet) {
+        walletList.add(wallet);
+        walletAdapter.notifyDataSetChanged();
     }
 }

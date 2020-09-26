@@ -6,14 +6,18 @@ public class Wallet {
     private String walletName, timeStamp;
     private double initialBalance;
     private Date date;
-    private int walletID;
+    private int walletID, walletSync;
 
-    public Wallet(String walletName, String timeStamp, double initialBalance, Date date, int walletID) {
+    public Wallet() {
+    }
+
+    public Wallet(String walletName, String timeStamp, double initialBalance, Date date, int walletID, int walletSync) {
         this.walletName = walletName;
         this.timeStamp = timeStamp;
         this.initialBalance = initialBalance;
         this.date = date;
         this.walletID = walletID;
+        this.walletSync = walletSync;
     }
 
     public String getWalletName() {
@@ -54,5 +58,13 @@ public class Wallet {
 
     public void setWalletID(int walletID) {
         this.walletID = walletID;
+    }
+
+    public int getWalletSync() {
+        return walletSync;
+    }
+
+    public void setWalletSync(int walletSync) {
+        this.walletSync = walletSync;
     }
 }
