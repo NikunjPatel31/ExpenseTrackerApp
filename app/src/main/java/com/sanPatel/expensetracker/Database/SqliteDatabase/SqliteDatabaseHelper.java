@@ -116,6 +116,28 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public boolean insertEntry(String title, String desc, double amount, String date, String time, boolean type, int sync, int walletID) {
+        // this method will insert new entry in the database.
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("expense_title",title);
+        contentValues.put("expense_desc",desc);
+        contentValues.put("expense_amount",amount);
+        contentValues.put("expense_date",date);
+        contentValues.put("expense_time_stamp",time);
+        contentValues.put("expense_type",type);
+        contentValues.put("sync",sync);
+        contentValues.put("wallet_id",walletID);
+        long result = db.insert(EXPENSE_TABLE_NAME,null,contentValues);
+        db.close();
+        return result != -1;
+    }
+
+    public Cursor getExpenseForWallet(int walletID) {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + EXPENSE_TABLE_NAME + " WHERE wallet_id = " + walletID,null);
+    }
+
     public Cursor getAllExpense() {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync != 2",null);
@@ -214,5 +236,11 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         // this method will fetch all the wallets.
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM "+ WALLET_TABLE_NAME,null);
+    }
+
+    public Cursor getWallet(int walletId) {
+        // this method will fetch all the detail of wallet.
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM "+WALLET_TABLE_NAME+" WHERE wallet_id = "+walletId,null);
     }
 }

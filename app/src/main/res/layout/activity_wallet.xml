@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorActivityBackground"
+    tools:context=".WalletActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_wallet"
+        style="@style/Toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:paddingStart="15dp"
+
+        android:paddingEnd="15dp"
+        android:paddingBottom="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_wallet">
+
+        <androidx.cardview.widget.CardView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:backgroundTint="@color/colorPrimaryLight"
+             app:cardCornerRadius="8dp"
+             app:cardElevation="0dp"
+             app:contentPadding="13dp"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toTopOf="parent">
+
+             <androidx.constraintlayout.widget.ConstraintLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:background="@color/colorPrimaryLight">
+
+                 <androidx.constraintlayout.widget.ConstraintLayout
+                     android:id="@+id/constraint_layout_available_amount"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintTop_toTopOf="parent"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content">
+
+                     <TextView
+                         android:id="@+id/text_view_available_amount"
+                         style="@style/homeScreentopbarTextView"
+                         android:fontFamily="@font/roboto_medium"
+                         android:text="Available : "
+                         app:layout_constraintStart_toStartOf="parent"
+                         app:layout_constraintTop_toTopOf="parent" />
+
+                     <TextView
+                         android:id="@+id/text_view_avialable_amount_value"
+                         style="@style/homeScreentopbarTextView"
+                         android:layout_width="wrap_content"
+                         android:layout_height="19dp"
+                         android:layout_marginStart="5dp"
+                         android:layout_marginTop="2dp"
+                         android:ellipsize="end"
+                         android:maxLines="1"
+                         android:text="₹ 0"
+                         app:layout_constraintEnd_toEndOf="parent"
+                         app:layout_constraintHorizontal_bias="0.0"
+                         app:layout_constraintStart_toEndOf="@id/text_view_available_amount"
+                         app:layout_constraintTop_toTopOf="parent" />
+
+                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                 <RelativeLayout
+                     android:id="@+id/relative_layout_vertical_line"
+                     android:layout_width="0dp"
+                     android:layout_height="2dp"
+                     android:layout_marginStart="3dp"
+                     android:layout_marginTop="5dp"
+                     android:layout_marginEnd="3dp"
+                     android:background="@color/colorEdittextHint"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/constraint_layout_available_amount" />
+
+                 <TextView
+                     android:id="@+id/text_view_total_amount"
+                     style="@style/homeScreentopbarTextView"
+                     android:text="Total :"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/relative_layout_vertical_line"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     android:layout_marginTop="5dp"/>
+
+                 <TextView
+                     android:id="@+id/text_view_total_amount_value"
+                     style="@style/homeScreentopbarTextView"
+                     android:text="₹ 0"
+                     android:layout_marginStart="5dp"
+                     android:layout_marginTop="5dp"
+                     android:ellipsize="end"
+                     android:maxLines="1"
+                     app:layout_constraintStart_toEndOf="@+id/text_view_total_amount"
+                     app:layout_constraintTop_toBottomOf="@id/relative_layout_vertical_line"
+                     app:layout_constraintBottom_toBottomOf="parent"/>
+
+                 <RelativeLayout
+                     android:id="@+id/relative_layout_horizontal_line"
+                     android:layout_width="2dp"
+                     android:layout_height="21dp"
+                     android:layout_marginTop="4dp"
+                     android:layout_marginStart="5dp"
+                     android:background="@color/colorEdittextHint"
+                     app:layout_constraintStart_toEndOf="@id/text_view_total_amount_value"
+                     app:layout_constraintTop_toBottomOf="@id/relative_layout_vertical_line"
+                     app:layout_constraintBottom_toBottomOf="parent"/>
+
+                 <TextView
+                     android:id="@+id/text_view_spend_amount"
+                     style="@style/homeScreentopbarTextView"
+                     android:layout_marginTop="5dp"
+                     android:layout_marginStart="5dp"
+                     android:text="Spend :"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintStart_toEndOf="@+id/relative_layout_horizontal_line"
+                     app:layout_constraintTop_toBottomOf="@id/relative_layout_vertical_line"
+                     app:layout_constraintVertical_bias="0.0" />
+
+                 <TextView
+                     android:id="@+id/text_view_spend_amount_value"
+                     style="@style/homeScreentopbarTextView"
+                     android:layout_width="wrap_content"
+                     android:layout_height="19dp"
+                     android:layout_marginStart="5dp"
+                     android:layout_marginTop="5dp"
+                     android:ellipsize="end"
+                     android:maxLines="1"
+                     android:text="₹ 0"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="0.0"
+                     app:layout_constraintStart_toEndOf="@id/text_view_spend_amount"
+                     app:layout_constraintTop_toBottomOf="@id/relative_layout_vertical_line"
+                     app:layout_constraintVertical_bias="0.0" />
+
+
+             </androidx.constraintlayout.widget.ConstraintLayout>
+
+         </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/text_view_latest_transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All Transactions"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint_layout_topbar"
+        android:layout_margin="20dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_transactions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:overScrollMode="never"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_latest_transaction"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_transaction"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_add_24"
+        android:layout_margin="15dp"
+        style="@style/homeScreenFab"
+        android:visibility="visible"
+        android:onClick="addEntry"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,6 +33,7 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
 
     // instance variable
     private String amount, expenseTitle, expenseDesc;
+    private int walletID = -1;
 
     // flag variable
     private int isSynced = 0;
@@ -99,7 +100,7 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
             // add expense
             imgBtnDeleteExpense.setVisibility(View.GONE);
 
-        } else {
+        } else if (getIntent().getStringExtra("Activity").equals("Edit_expense")) {
             // edit expense
             etAmount.setText(Double.toString(getIntent().getDoubleExtra("Amount",0)));
             etExpenseTitle.setText(getIntent().getStringExtra("Title"));
@@ -107,6 +108,10 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
 
             toolbar.setTitle("Edit Expense");
             btnAdd.setText("Apply");
+        } else {
+            // add expense from wallet.
+            imgBtnDeleteExpense.setVisibility(View.GONE);
+            walletID = getIntent().getIntExtra("Wallet_id",-1);
         }
     }
 
@@ -129,7 +134,8 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
 
         MyAsyncTask myAsyncTask = new MyAsyncTask();
 
-        if (getIntent().getStringExtra("Activity").equals("Add_Expense")) {
+        if (getIntent().getStringExtra("Activity").equals("Add_Expense") ||
+        getIntent().getStringExtra("Activity").equals("wallet")) {
             // add new add expense
             myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
                 @Override
@@ -146,7 +152,7 @@ public class AddExpenseActivity extends AppCompatActivity implements EntryCatego
                     } else {
                         isSynced = 0;
                     }
-                    databaseHelper.insertEntry(expenseTitle, expenseDesc, Double.parseDouble(amount),currentDate,currentTime, selectedPosition != 0, isSynced);
+                    databaseHelper.insertEntry(expenseTitle, expenseDesc, Double.parseDouble(amount),currentDate,currentTime, selectedPosition != 0, isSynced,walletID);
                 }
 
                 @Override

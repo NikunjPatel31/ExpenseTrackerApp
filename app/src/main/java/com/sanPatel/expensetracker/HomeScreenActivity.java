@@ -169,7 +169,7 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
             @Override
             public void setPostExecuteTask() {
                 //Toast.makeText(HomeScreenActivity.this, ""+walletList.size(), Toast.LENGTH_SHORT).show();
-                walletAdapter = new WalletRecyclerViewAdapter(walletList);
+                walletAdapter = new WalletRecyclerViewAdapter(walletList, getApplicationContext());
                 walletRecyclerView.setAdapter(walletAdapter);
             }
         });
