@@ -1,5 +1,6 @@
 package com.sanPatel.expensetracker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,11 +20,13 @@ import com.sanPatel.expensetracker.Adapter.MyExpenseRecyclerViewAdapter;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Expense;
+import com.sanPatel.expensetracker.Datas.Wallet;
+import com.sanPatel.expensetracker.Fragment.WalletFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class WalletActivity extends AppCompatActivity {
+public class WalletActivity extends AppCompatActivity implements WalletFragment.ButtonClickListener {
 
     // widgets
     private RecyclerView recyclerViewTranscation;
@@ -34,6 +39,7 @@ public class WalletActivity extends AppCompatActivity {
     private ArrayList<Expense> expenseList;
     private MyExpenseRecyclerViewAdapter adapter;
     private double initialBal;
+    private Wallet wallet;
 
     public void addEntry(View view) {
         // this method open AddExpenseActivity.
@@ -53,7 +59,8 @@ public class WalletActivity extends AppCompatActivity {
         recyclerViewTranscation.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerViewTranscation.setHasFixedSize(true);
 
-    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             onBackPressed();
@@ -66,6 +73,25 @@ public class WalletActivity extends AppCompatActivity {
         super.onResume();
         fetchTransaction();
         setWalletBal();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_wallet,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_edit_wallet:
+                WalletFragment.display(getSupportFragmentManager(), wallet);
+                break;
+            case R.id.menu_delete_wallet:
+                Toast.makeText(this, "Delete wallet", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 
     private void initializeWidgets() {
@@ -138,8 +164,18 @@ public class WalletActivity extends AppCompatActivity {
         Cursor cursor = databaseHelper.getWallet(walletID);
         if (cursor.getCount() > 0) {
             cursor.moveToNext();
-            toolbar.setTitle(cursor.getString(1));
-            initialBal = cursor.getDouble(2);
+            try {
+                wallet.setWalletID(walletID);
+                wallet.setWalletName(cursor.getString(1));
+                wallet.setInitialBalance(cursor.getDouble(2));
+                wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
+                wallet.setTimeStamp(cursor.getString(4));
+                wallet.setWalletSync(cursor.getInt(5));
+                toolbar.setTitle(cursor.getString(1));
+                initialBal = cursor.getDouble(2);
+            } catch (Exception e) {
+
+            }
         }
     }
 
@@ -147,5 +183,10 @@ public class WalletActivity extends AppCompatActivity {
         // this method will set the wallet available balance, total, spend.
         getWalletDetails();
         tvTotal.setText(Double.toString(initialBal));
+    }
+
+    @Override
+    public void onButtonClickListener(Wallet wallet) {
+        // update walletInfo
     }
 }

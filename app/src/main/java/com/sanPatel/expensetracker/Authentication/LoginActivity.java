@@ -207,6 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                         expense.setExpense_type(Integer.parseInt(snapshot.child("Type").getValue().toString()));
                         expense.setTime(snapshot.child("Time").getValue().toString());
                         expense.setSync(Integer.parseInt(snapshot.child("sync").getValue().toString()));
+                        expense.setWalletID(Integer.parseInt(snapshot.child("wallet_id").getValue().toString()));
 
                         expensesList.add(expense);
                         boolean expense_type;
@@ -223,7 +224,8 @@ public class LoginActivity extends AppCompatActivity {
                                 new SimpleDateFormat("dd-MM-yyyy").format(expense.getExpense_date()),
                                 expense.getTime(),
                                 expense_type,
-                                expense.getSync());
+                                expense.getSync(),
+                                expense.getWalletID());
 
                         if (counter[0] == count[0]) {
                             Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);

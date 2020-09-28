@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.sanPatel.expensetracker.Datas.Expense;
+import com.sanPatel.expensetracker.Datas.Wallet;
+
+import java.text.SimpleDateFormat;
 
 public class SqliteDatabaseHelper extends SQLiteOpenHelper {
 
@@ -242,5 +245,18 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         // this method will fetch all the detail of wallet.
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM "+WALLET_TABLE_NAME+" WHERE wallet_id = "+walletId,null);
+    }
+
+    public void updateWallet(Wallet wallet) {
+        // this method will update walletInfo.
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("wallet_name",wallet.getWalletName());
+        contentValues.put("wallet_initial_balance",wallet.getInitialBalance());
+        contentValues.put("wallet_date",new SimpleDateFormat("dd-MM-yyyy").format(wallet.getDate()));
+        contentValues.put("wallet_time_stamp",wallet.getTimeStamp());
+        contentValues.put("wallet_sync",wallet.getWalletSync());
+
+        db.update(WALLET_TABLE_NAME,contentValues,"wallet_id = ?",new String[] {String.valueOf(wallet.getWalletID())});
     }
 }

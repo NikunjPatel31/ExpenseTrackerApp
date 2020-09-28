@@ -44,8 +44,28 @@ public class WalletFragment extends DialogFragment {
     // buttonClickedInterface
     private static ButtonClickListener buttonClickListener;
 
+    // instance variable
+    private Wallet wallet;
+
+    // flag variable
+    private boolean isEdit = false;
+
+    public WalletFragment(Wallet wallet) {
+        this.wallet = wallet;
+        isEdit = true;
+    }
+
+    public WalletFragment() {
+    }
+
     public static WalletFragment display(FragmentManager fragmentManager) {
         WalletFragment walletFragment = new WalletFragment();
+        walletFragment.show(fragmentManager,TAG);
+        return walletFragment;
+    }
+
+    public static WalletFragment display(FragmentManager fragmentManager, Wallet wallet) {
+        WalletFragment walletFragment = new WalletFragment(wallet);
         walletFragment.show(fragmentManager,TAG);
         return walletFragment;
     }
@@ -64,6 +84,7 @@ public class WalletFragment extends DialogFragment {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
+            dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
         }
     }
 
@@ -77,9 +98,23 @@ public class WalletFragment extends DialogFragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if (isEdit) {
+            populateWidgets();
+        }
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         buttonClickListener = (ButtonClickListener) context;
+    }
+
+    private void populateWidgets() {
+        toolbar.setTitle("Edit Wallet");
+        etWalletName.setText(wallet.getWalletName());
+        etInitialBalance.setText(Double.toString(wallet.getInitialBalance()));
+        btnCreate.setText("Apply");
     }
 
     private void initializeWidgets(View view) {
@@ -102,10 +137,55 @@ public class WalletFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (!(etWalletName.getText().toString().isEmpty() && etInitialBalance.getText().toString().isEmpty())) {
-                    insertWallet();
+                    if (isEdit) {
+                        updateWallet();
+                    } else {
+                        insertWallet();
+                    }
                 } else {
                     Toast.makeText(getContext(), "Required fields are empty.", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+
+    private void updateWallet() {
+        // update wallet in local as well as firebase db.
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
+            @Override
+            public void setBackgroundTask() {
+                int isSynced = 1;
+                if (isNetworkConnected()) {
+                    isSynced = 1;
+                } else {
+                    isSynced = 0;
+                }
+
+                String currentDate = new SimpleDateFormat("dd-MM-yyyy",
+                        Locale.getDefault()).format(new Date());
+
+                String currentTime = new SimpleDateFormat("HH:mm:ss",
+                        Locale.getDefault()).format(new Date());
+
+                try {
+                    wallet.setWalletName(etWalletName.getText().toString());
+                    wallet.setInitialBalance(Double.parseDouble(etInitialBalance.getText().toString()));
+                    wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(currentDate));
+                    wallet.setTimeStamp(currentTime);
+                    wallet.setWalletSync(isSynced);
+                    SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getContext());
+                    databaseHelper.updateWallet(wallet);
+
+
+                } catch (Exception e) {
+
+                }
+            }
+
+            @Override
+            public void setPostExecuteTask() {
+
             }
         });
     }
