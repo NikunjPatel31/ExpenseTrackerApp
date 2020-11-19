@@ -103,4 +103,17 @@ public class FirebaseDBOperation {
         databaseReference.child("Wallet_time_stamp").setValue(cursor.getString(4));
         databaseReference.child("Wallet_sync").setValue(cursor.getInt(5));
     }
+
+    public void insertWallet(Wallet wallet) {
+        // this method will insert wallet.
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                .getReference().child("Wallet").child(mAuth.getUid()).child(Integer.toString(wallet.getWalletID()));
+
+        databaseReference.child("Wallet_name").setValue(wallet.getWalletName());
+        databaseReference.child("Wallet_initial_bal").setValue(wallet.getInitialBalance());
+        databaseReference.child("Wallet_data").setValue(new SimpleDateFormat("dd-MM-yyyy").format(wallet.getDate()));
+        databaseReference.child("Wallet_time_stamp").setValue(wallet.getTimeStamp());
+        databaseReference.child("Wallet_sync").setValue(wallet.getWalletSync());
+    }
 }

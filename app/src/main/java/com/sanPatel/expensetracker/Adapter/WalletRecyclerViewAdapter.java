@@ -42,6 +42,7 @@ public class WalletRecyclerViewAdapter extends RecyclerView.Adapter<WalletRecycl
                 Intent intent = new Intent(context, WalletActivity.class);
                 intent.putExtra("Wallet_id",walletList.get(position).getWalletID());
                 intent.putExtra("Wallet_name", walletList.get(position).getWalletName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

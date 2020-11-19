@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.sanPatel.expensetracker.Adapter.MyExpenseRecyclerViewAdapter;
 import com.sanPatel.expensetracker.AsyncTask.MyAsyncTask;
+import com.sanPatel.expensetracker.Database.Firebase.FirebaseDBOperation;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Expense;
 import com.sanPatel.expensetracker.Datas.Wallet;
@@ -36,10 +37,10 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     // instance variable
     private static final String TAG = "WalletActivity";
     private int walletID;
-    private ArrayList<Expense> expenseList;
+    private ArrayList<Expense> expenseList = new ArrayList<>();
     private MyExpenseRecyclerViewAdapter adapter;
     private double initialBal;
-    private Wallet wallet;
+    private Wallet wallet = new Wallet();
 
     public void addEntry(View view) {
         // this method open AddExpenseActivity.
@@ -71,6 +72,7 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     @Override
     protected void onResume() {
         super.onResume();
+        expenseList.clear();
         fetchTransaction();
         setWalletBal();
     }
@@ -85,6 +87,7 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit_wallet:
+
                 WalletFragment.display(getSupportFragmentManager(), wallet);
                 break;
             case R.id.menu_delete_wallet:
@@ -120,7 +123,6 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
                 if (cursor.getCount() > 0) {
                     // expense for walletId is available.
                     Log.d(TAG, "setBackgroundTask: cursor: "+cursor.getCount());
-                    expenseList = new ArrayList<>();
                     try {
                         while (cursor.moveToNext()) {
                             Expense expense = new Expense();
@@ -151,6 +153,7 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
                 if (expenseList.size() > 0) {
                     adapter = new MyExpenseRecyclerViewAdapter(expenseList, getApplicationContext());
                     recyclerViewTranscation.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
@@ -188,5 +191,12 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     @Override
     public void onButtonClickListener(Wallet wallet) {
         // update walletInfo
+//        SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+//        databaseHelper.updateWallet(wallet);
+//        FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+//        firebaseDBOperation.insertWallet(wallet);
+//        Toast.makeText(this, "apply button pressed.", Toast.LENGTH_SHORT).show();
+        toolbar.setTitle(wallet.getWalletName());
+        tvAvailableBal.setText(Double.toString(wallet.getInitialBalance()));
     }
 }

@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.sanPatel.expensetracker.Database.Firebase.FirebaseDBOperation;
 import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Expense;
+import com.sanPatel.expensetracker.Datas.Wallet;
 import com.sanPatel.expensetracker.HomeScreenActivity;
 import com.sanPatel.expensetracker.R;
 
@@ -185,9 +186,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void retrieveExpense() {
+        // this method will retrieve all the expense records from firebase.
         final int[] count = {0};
         final int counter[] = {0};
-        final ArrayList<Expense> expensesList = new ArrayList<>();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
                 .child("Expense").child(mAuth.getUid());
@@ -197,6 +198,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.exists()) {
                     counter[0]++;
+                    Log.d(TAG, "onChildAdded: counter: "+counter[0]);
                     try {
                         Expense expense = new Expense();
                         expense.setExpense_id(Integer.parseInt(snapshot.getKey()));
@@ -207,9 +209,11 @@ public class LoginActivity extends AppCompatActivity {
                         expense.setExpense_type(Integer.parseInt(snapshot.child("Type").getValue().toString()));
                         expense.setTime(snapshot.child("Time").getValue().toString());
                         expense.setSync(Integer.parseInt(snapshot.child("sync").getValue().toString()));
-                        expense.setWalletID(Integer.parseInt(snapshot.child("wallet_id").getValue().toString()));
-
-                        expensesList.add(expense);
+                        if (snapshot.child("wallet_id").exists()) {
+                            expense.setWalletID(Integer.parseInt(snapshot.child("wallet_id").getValue().toString()));
+                        } else {
+                            expense.setWalletID(-1);
+                        }
                         boolean expense_type;
                         if (expense.getExpense_type() == 0) {
                             expense_type = false;
@@ -228,12 +232,10 @@ public class LoginActivity extends AppCompatActivity {
                                 expense.getWalletID());
 
                         if (counter[0] == count[0]) {
-                            Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
+                            Log.d(TAG, "onChildAdded: data fetched successfully.");
+                            retrieveWallet();
                         } else {
-                            Log.d(TAG, "onChildAdded: counter: "+counter[0]+"   count: "+count[0]);
+                            //Log.d(TAG, "onChildAdded: counter: "+counter[0]+"   count: "+count[0]);
                         }
                     } catch (Exception e) {
 
@@ -269,6 +271,80 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 count[0] = (int) snapshot.getChildrenCount();
                 databaseReference.addChildEventListener(childEventListener);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void retrieveWallet() {
+        // this method will retrieve all the wallet records from the firebase.
+        final int[] recordCount = {0};
+        final int[] fetchedRecordCount = {0};
+        final ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Log.d(TAG, "retrieve wallet: onChildAdded: "+snapshot.toString());
+                if (snapshot.exists()) {
+                    fetchedRecordCount[0]++;
+                    try {
+                        Wallet wallet = new Wallet();
+                        wallet.setWalletID(Integer.parseInt(snapshot.getKey()));
+                        wallet.setWalletName(snapshot.child("Wallet_name").getValue().toString());
+                        wallet.setInitialBalance(Double.parseDouble(snapshot.child("Wallet_initial_bal").getValue().toString()));
+                        wallet.setTimeStamp(snapshot.child("Wallet_time_stamp").getValue().toString());
+                        wallet.setWalletSync(Integer.parseInt(snapshot.child("Wallet_sync").getValue().toString()));
+                        wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(snapshot.child("Wallet_data").getValue().toString()));
+
+                        SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                        databaseHelper.insertWallet(wallet);
+
+                        if (fetchedRecordCount[0] == recordCount[0]) {
+                            // go to next screen.
+                            Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                    } catch (Exception e) {
+                        Log.d(TAG, "onChildAdded: EXCEPTION: "+e.getLocalizedMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Wallet").child(mAuth.getUid());
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "onDataChange: "+snapshot.getChildrenCount());
+                recordCount[0] = (int) snapshot.getChildrenCount();
+                db.addChildEventListener(childEventListener);
             }
 
             @Override

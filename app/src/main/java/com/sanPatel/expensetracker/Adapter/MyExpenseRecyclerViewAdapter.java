@@ -62,6 +62,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
                 intent.putExtra("Amount",expenseList.get(position).getExpense_amount());
                 intent.putExtra("Title",expenseList.get(position).getExpense_title());
                 intent.putExtra("Desc",expenseList.get(position).getExpense_description());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

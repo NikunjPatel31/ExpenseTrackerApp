@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.sanPatel.expensetracker.Database.SqliteDatabase.SqliteDatabaseHelper;
 import com.sanPatel.expensetracker.Datas.Wallet;
 import com.sanPatel.expensetracker.R;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -65,6 +67,7 @@ public class WalletFragment extends DialogFragment {
     }
 
     public static WalletFragment display(FragmentManager fragmentManager, Wallet wallet) {
+        Log.d(TAG, "display: "+wallet.getWalletName());
         WalletFragment walletFragment = new WalletFragment(wallet);
         walletFragment.show(fragmentManager,TAG);
         return walletFragment;
@@ -174,9 +177,9 @@ public class WalletFragment extends DialogFragment {
                     wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(currentDate));
                     wallet.setTimeStamp(currentTime);
                     wallet.setWalletSync(isSynced);
+                    buttonClickListener.onButtonClickListener(wallet);
                     SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getContext());
                     databaseHelper.updateWallet(wallet);
-
 
                 } catch (Exception e) {
 
@@ -185,9 +188,14 @@ public class WalletFragment extends DialogFragment {
 
             @Override
             public void setPostExecuteTask() {
-
+                if (wallet.getWalletSync() == 1) {
+                    FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getContext());
+                    firebaseDBOperation.insertWallet(wallet);
+                }
+                dismiss();
             }
         });
+        myAsyncTask.execute();
     }
 
     public void insertWallet() {
@@ -196,6 +204,7 @@ public class WalletFragment extends DialogFragment {
         myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
             @Override
             public void setBackgroundTask() {
+                SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getContext());
                 String currentDate = new SimpleDateFormat("dd-MM-yyyy",
                         Locale.getDefault()).format(new Date());
 
@@ -209,13 +218,17 @@ public class WalletFragment extends DialogFragment {
                 } else {
                     isSynced = 0;
                 }
-
-                SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getContext());
-                databaseHelper.insertWallet(etWalletName.getText().toString(),
-                        Double.parseDouble(etInitialBalance.getText().toString()),
-                        currentDate,
-                        currentTime,
-                        isSynced);
+                try {
+                    Wallet wallet = new Wallet();
+                    wallet.setWalletName(etWalletName.getText().toString());
+                    wallet.setInitialBalance(Double.parseDouble(etInitialBalance.getText().toString()));
+                    wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(currentDate));
+                    wallet.setTimeStamp(currentTime);
+                    wallet.setWalletSync(isSynced);
+                    databaseHelper.insertWallet(wallet);
+                } catch (Exception e) {
+                    Log.d(TAG, "setBackgroundTask: Exception: "+e.getLocalizedMessage());
+                }
 
                 try {
                     Cursor walletcursor = databaseHelper.getLastWallet();

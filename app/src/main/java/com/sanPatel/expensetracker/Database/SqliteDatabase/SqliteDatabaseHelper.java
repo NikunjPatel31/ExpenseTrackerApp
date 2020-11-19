@@ -12,6 +12,8 @@ import com.sanPatel.expensetracker.Datas.Expense;
 import com.sanPatel.expensetracker.Datas.Wallet;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class SqliteDatabaseHelper extends SQLiteOpenHelper {
 
@@ -215,15 +217,15 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" WHERE entry_id = "+expense_id,null);
     }
 
-    public boolean insertWallet(String walletName, double initialBalance, String walletDate, String walletTime, int walletSync) {
+    public boolean insertWallet(Wallet wallet) {
         // this method will insert wallet.
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("wallet_name",walletName);
-        contentValues.put("wallet_initial_balance", initialBalance);
-        contentValues.put("wallet_date", walletDate);
-        contentValues.put("wallet_time_stamp", walletTime);
-        contentValues.put("wallet_sync",walletSync);
+        contentValues.put("wallet_name",wallet.getWalletName());
+        contentValues.put("wallet_initial_balance", wallet.getInitialBalance());
+        contentValues.put("wallet_date", new SimpleDateFormat("dd-MM-yyyy").format(wallet.getDate()));
+        contentValues.put("wallet_time_stamp", wallet.getTimeStamp());
+        contentValues.put("wallet_sync",wallet.getWalletSync());
         long result = db.insert(WALLET_TABLE_NAME,null,contentValues);
         db.close();
         return result != -1;
