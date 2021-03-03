@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 
 public class HomeScreenActivity extends AppCompatActivity implements WalletFragment.ButtonClickListener{
 
+    private static final String TAG = "HomeScreenActivity";
+    
     // widgets.
     private FloatingActionButton fabSetting, fabAddExpense, fabViewExpenses;
     private RecyclerView myExpenseRecyclerView, walletRecyclerView;
@@ -47,7 +50,7 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
     // instance variable
     private ArrayList<Expense> expenseList;
     private MyExpenseRecyclerViewAdapter adapter;
-    private ArrayList<Wallet> walletList;
+    private ArrayList<Wallet> walletList = new ArrayList<>();
     private WalletRecyclerViewAdapter walletAdapter;
 
     public void viewAllExpense(View view) {
@@ -120,6 +123,7 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
     @Override
     protected void onResume() {
         super.onResume();
+        walletList.clear();
         getWallet();
         getLatestTransaction();
         gettotalAmount();
@@ -139,7 +143,7 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
 
     private void getWallet() {
         // this method will fetch all wallets.
-        walletList = new ArrayList<>();
+
         MyAsyncTask myAsyncTask = new MyAsyncTask();
         myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
             @Override
@@ -148,18 +152,22 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
                 Cursor cursor = databaseHelper.getAllWallet();
                 try {
                     if (cursor.getCount() > 0) {
+                        Log.d(TAG, "setBackgroundTask: wallet exist");
                         while (cursor.moveToNext()) {
-                            Wallet wallet = new Wallet();
-                            wallet.setWalletID(cursor.getInt(0));
-                            wallet.setWalletName(cursor.getString(1));
-                            wallet.setInitialBalance(cursor.getDouble(2));
-                            wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
-                            wallet.setWalletSync(cursor.getInt(4));
+                            if (cursor.getInt(5) != 2) {
+                                Wallet wallet = new Wallet();
+                                wallet.setWalletID(cursor.getInt(0));
+                                wallet.setWalletName(cursor.getString(1));
+                                wallet.setInitialBalance(cursor.getDouble(2));
+                                wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
+                                wallet.setWalletSync(cursor.getInt(4));
 
-                            walletList.add(wallet);
+                                walletList.add(wallet);
+                            }
                         }
+                    } else {
+                        Log.d(TAG, "setBackgroundTask: wallet does not exist");
                     }
-
 
                 } catch (Exception e) {
 
@@ -168,9 +176,9 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
 
             @Override
             public void setPostExecuteTask() {
-                //Toast.makeText(HomeScreenActivity.this, ""+walletList.size(), Toast.LENGTH_SHORT).show();
                 walletAdapter = new WalletRecyclerViewAdapter(walletList, getApplicationContext());
                 walletRecyclerView.setAdapter(walletAdapter);
+                walletAdapter.notifyDataSetChanged();
             }
         });
 

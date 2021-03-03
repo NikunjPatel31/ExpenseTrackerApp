@@ -116,4 +116,21 @@ public class FirebaseDBOperation {
         databaseReference.child("Wallet_time_stamp").setValue(wallet.getTimeStamp());
         databaseReference.child("Wallet_sync").setValue(wallet.getWalletSync());
     }
+
+    public void deleteWallet(int walletId) {
+        // this method will delete wallet from firebase.
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                .getReference().child("Wallet").child(mAuth.getUid()).child(Integer.toString(walletId));
+
+        databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
+    }
 }

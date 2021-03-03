@@ -207,24 +207,25 @@ public class SettingActivity extends AppCompatActivity implements EditProfileFra
                         InputStream inputStream = getContentResolver().openInputStream(resultUri);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         cirImgPhoto.setImageBitmap(bitmap);
-                        MyAsyncTask myAsyncTask = new MyAsyncTask();
-                        myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
-                            @Override
-                            public void setBackgroundTask() {
-                                SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(SettingActivity.this);
-                                boolean isPhotoSaved = databaseHelper.updateUserPhoto(imageViewToByte(cirImgPhoto));
-                                if (!isPhotoSaved) {
-                                    // error in saving photo to database.
-                                    cirImgPhoto.setImageResource(R.drawable.user_account); 
-                                }
-                            }
-
-                            @Override
-                            public void setPostExecuteTask() {
-
-                            }
-                        });
-                        myAsyncTask.execute();
+                        SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(SettingActivity.this);
+                        boolean isPhotoSaved = databaseHelper.updateUserPhoto(imageViewToByte(cirImgPhoto));
+                        if (!isPhotoSaved) {
+                            // error in saving photo to database.
+                            cirImgPhoto.setImageResource(R.drawable.user_account);
+                        }
+//                        MyAsyncTask myAsyncTask = new MyAsyncTask();
+//                        myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
+//                            @Override
+//                            public void setBackgroundTask() {
+//
+//                            }
+//
+//                            @Override
+//                            public void setPostExecuteTask() {
+//
+//                            }
+//                        });
+//                        myAsyncTask.execute();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

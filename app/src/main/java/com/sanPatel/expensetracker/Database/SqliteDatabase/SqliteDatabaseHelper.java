@@ -186,7 +186,10 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         long result = db.delete(USER_TABLE_NAME,null,null);
         if (result != -1) {
-            db.delete(EXPENSE_TABLE_NAME,null,null);
+            result = db.delete(EXPENSE_TABLE_NAME,null,null);
+            if (result != -1) {
+                db.delete(WALLET_TABLE_NAME, null, null);
+            }
         }
     }
 
@@ -194,6 +197,12 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         // this method will check is the syncing of entries is remaining
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("Select * from "+EXPENSE_TABLE_NAME+" WHERE sync = 0 OR sync = 2",null);
+    }
+
+    public Cursor getWalletRemainSync() {
+        // this method will check if there is any syncing for wallet remaining.
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("Select * from "+WALLET_TABLE_NAME+" WHERE wallet_sync = 0 OR wallet_sync = 2",null);
     }
 
     public Cursor getLastEntry() {
@@ -249,7 +258,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM "+WALLET_TABLE_NAME+" WHERE wallet_id = "+walletId,null);
     }
 
-    public void updateWallet(Wallet wallet) {
+    public boolean updateWallet(Wallet wallet){
         // this method will update walletInfo.
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -259,6 +268,21 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("wallet_time_stamp",wallet.getTimeStamp());
         contentValues.put("wallet_sync",wallet.getWalletSync());
 
-        db.update(WALLET_TABLE_NAME,contentValues,"wallet_id = ?",new String[] {String.valueOf(wallet.getWalletID())});
+        long result = db.update(WALLET_TABLE_NAME,contentValues,"wallet_id = ?",new String[] {String.valueOf(wallet.getWalletID())});
+        return result != -1;
+    }
+
+    public void deleteWallet(int wallet_id) {
+        // this method will delete wallet.
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(WALLET_TABLE_NAME,"wallet_id = ?",new String[] {String.valueOf(wallet_id)});
+    }
+
+    public void updateWalletSyncValue(int wallet_id, int sync) {
+        // this method will update sync value of wallet.
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("wallet_sync",sync);
+        db.update(WALLET_TABLE_NAME, contentValues, "wallet_id = ?", new String[] {String.valueOf(wallet_id)});
     }
 }

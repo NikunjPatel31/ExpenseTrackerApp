@@ -7,6 +7,7 @@ import androidx.core.widget.ContentLoadingProgressBar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -72,7 +73,6 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
-
         initializeWidgets();
         initializeFirebaseWidgets();
         widgetsClickListener();
@@ -81,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
     }
 
     private void initializeWidgets() {
@@ -187,10 +186,38 @@ public class LoginActivity extends AppCompatActivity {
 
     private void retrieveExpense() {
         // this method will retrieve all the expense records from firebase.
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final DatabaseReference db;
+        db = FirebaseDatabase.getInstance().getReference().child("Expense");
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(mAuth.getUid())) {
+                    // there is node under expense node
+                    getExpense();
+                } else {
+                    //user had not made any expense. hence, there is no child in expense.
+                    // go to next screen.
+                    Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getExpense() {
         final int[] count = {0};
         final int counter[] = {0};
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+
+        final DatabaseReference databaseReference;
+        databaseReference = FirebaseDatabase.getInstance().getReference()
                 .child("Expense").child(mAuth.getUid());
 
         final ChildEventListener childEventListener = new ChildEventListener() {
@@ -198,7 +225,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if (snapshot.exists()) {
                     counter[0]++;
-                    Log.d(TAG, "onChildAdded: counter: "+counter[0]);
+                    // Log.d(TAG, "onChildAdded: counter: "+counter[0]);
                     try {
                         Expense expense = new Expense();
                         expense.setExpense_id(Integer.parseInt(snapshot.getKey()));
@@ -220,7 +247,6 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             expense_type = true;
                         }
-
                         SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
                         databaseHelper.insertEntry(expense.getExpense_title(),
                                 expense.getExpense_description(),
@@ -282,6 +308,32 @@ public class LoginActivity extends AppCompatActivity {
 
     private void retrieveWallet() {
         // this method will retrieve all the wallet records from the firebase.
+
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Wallet");
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(mAuth.getUid())) {
+                    // there is child under wallet node.
+                    getWallet();
+                } else {
+                    // there is no child under wallet node. Because, user has not created any wallet
+                    // go to next screen.
+                    Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getWallet() {
         final int[] recordCount = {0};
         final int[] fetchedRecordCount = {0};
         final ChildEventListener childEventListener = new ChildEventListener() {
@@ -289,6 +341,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Log.d(TAG, "retrieve wallet: onChildAdded: "+snapshot.toString());
                 if (snapshot.exists()) {
+                    Log.d(TAG, "onChildAdded: wallet is there");
                     fetchedRecordCount[0]++;
                     try {
                         Wallet wallet = new Wallet();
@@ -313,6 +366,12 @@ public class LoginActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         Log.d(TAG, "onChildAdded: EXCEPTION: "+e.getLocalizedMessage());
                     }
+                } else {
+                    // go to next screen.
+                    Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
                 }
             }
 
@@ -342,7 +401,12 @@ public class LoginActivity extends AppCompatActivity {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d(TAG, "onDataChange: "+snapshot.getChildrenCount());
+                if ((int) snapshot.getChildrenCount() == 0) {
+                    Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
                 recordCount[0] = (int) snapshot.getChildrenCount();
                 db.addChildEventListener(childEventListener);
             }

@@ -6,8 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -91,7 +93,19 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
                 WalletFragment.display(getSupportFragmentManager(), wallet);
                 break;
             case R.id.menu_delete_wallet:
-                Toast.makeText(this, "Delete wallet", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Delete wallet", Toast.LENGTH_SHORT).show();
+                if(isNetworkConnected()) {
+                    // internet access is there.
+                    SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                    databaseHelper.deleteWallet(wallet.getWalletID());
+                    FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                    firebaseDBOperation.deleteWallet(wallet.getWalletID());
+                } else {
+                    // internet access is not there.
+                    SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
+                    databaseHelper.updateWalletSyncValue(wallet.getWalletID(),2);
+                }
+                onBackPressed();
                 break;
         }
         return true;
@@ -198,5 +212,11 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
 //        Toast.makeText(this, "apply button pressed.", Toast.LENGTH_SHORT).show();
         toolbar.setTitle(wallet.getWalletName());
         tvAvailableBal.setText(Double.toString(wallet.getInitialBalance()));
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }

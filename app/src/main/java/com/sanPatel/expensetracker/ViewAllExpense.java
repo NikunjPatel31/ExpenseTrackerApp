@@ -46,7 +46,7 @@ public class ViewAllExpense extends AppCompatActivity {
     private MyAsyncTask myAsyncTask;
     private ArrayList<Expense> expenseList;
     private MyExpenseRecyclerViewAdapter adapter;
-    private Cursor cursor;
+    private Cursor cursor, walletCursor;
 
     public void sync(View view) {
         // this method will sync all the offline entry.
@@ -66,6 +66,22 @@ public class ViewAllExpense extends AppCompatActivity {
                         firebaseDBOperation.deleteExpense(cursor.getInt(0));
                         databaseHelper.deleteExpense(cursor.getInt(0));
                     }
+                }
+            } else if (walletCursor.getCount() > 0) {
+                while (walletCursor.moveToNext()) {
+                    // sync wallet data with firebase
+                    if (walletCursor.getInt(5) == 0) {
+                        // push record to firebase
+                        databaseHelper.updateWalletSyncValue(walletCursor.getInt(0),1);
+                        FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                        firebaseDBOperation.insertWallet(cursor);
+                    } else if (walletCursor.getInt(5) == 2) {
+                        // delete record from firebase and then delete from sqlite.
+                        FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
+                        firebaseDBOperation.deleteWallet(walletCursor.getInt(0));
+                        databaseHelper.deleteWallet(walletCursor.getInt(0));
+                    }
+
                 }
             }
             btnSync.setEnabled(false);
@@ -119,7 +135,8 @@ public class ViewAllExpense extends AppCompatActivity {
         btnSync.setEnabled(false);
         SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
         cursor = databaseHelper.getRemainSync();
-        if (cursor.getCount() > 0) {
+        walletCursor = databaseHelper.getWalletRemainSync();
+        if (cursor.getCount() > 0 || walletCursor.getCount() > 0) {
             // entries are available for sync.
             btnSync.setEnabled(true);
         }

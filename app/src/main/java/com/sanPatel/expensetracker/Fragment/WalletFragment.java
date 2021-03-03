@@ -172,17 +172,22 @@ public class WalletFragment extends DialogFragment {
                         Locale.getDefault()).format(new Date());
 
                 try {
+                    Log.d(TAG, "setBackgroundTask: we are at the position");
                     wallet.setWalletName(etWalletName.getText().toString());
                     wallet.setInitialBalance(Double.parseDouble(etInitialBalance.getText().toString()));
                     wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(currentDate));
                     wallet.setTimeStamp(currentTime);
                     wallet.setWalletSync(isSynced);
-                    buttonClickListener.onButtonClickListener(wallet);
+
                     SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getContext());
-                    databaseHelper.updateWallet(wallet);
+                    if (databaseHelper.updateWallet(wallet)) {
+                        Log.d(TAG, "setBackgroundTask: Update successful");
+                    } else {
+                        Log.d(TAG, "setBackgroundTask: Update not happen");
+                    }
 
                 } catch (Exception e) {
-
+                    Log.d(TAG, "setBackgroundTask: EXCEPTION: "+e.getLocalizedMessage());
                 }
             }
 
@@ -192,6 +197,7 @@ public class WalletFragment extends DialogFragment {
                     FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getContext());
                     firebaseDBOperation.insertWallet(wallet);
                 }
+                buttonClickListener.onButtonClickListener(wallet);
                 dismiss();
             }
         });
