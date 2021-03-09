@@ -216,7 +216,7 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     public void setWalletBal() {
         // this method will set the wallet available balance, total, spend.
         getWalletDetails();
-        tvTotal.setText(Double.toString(initialBal));
+        tvTotal.setText("₹ "+Double.toString(initialBal));
     }
 
     @Override
@@ -228,7 +228,7 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
 //        firebaseDBOperation.insertWallet(wallet);
 //        Toast.makeText(this, "apply button pressed.", Toast.LENGTH_SHORT).show();
         toolbar.setTitle(wallet.getWalletName());
-        tvAvailableBal.setText(Double.toString(wallet.getInitialBalance()));
+        tvTotal.setText(Double.toString(wallet.getInitialBalance()));
     }
 
     private boolean isNetworkConnected() {

@@ -130,6 +130,7 @@
         <item name="android:layout_marginEnd">15dp</item>
         <item name="android:textSize">23sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:inputType">textCapSentences</item>
         <item name="fontFamily">@font/poppins_medium</item>
     </style>
 

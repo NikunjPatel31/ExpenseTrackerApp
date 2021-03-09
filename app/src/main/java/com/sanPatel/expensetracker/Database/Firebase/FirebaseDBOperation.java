@@ -72,6 +72,7 @@ public class FirebaseDBOperation {
         db.child("Time").setValue(cursor.getString(5));
         db.child("Type").setValue(cursor.getInt(6));
         db.child("sync").setValue(cursor.getInt(7));
+        db.child("wallet_id").setValue(cursor.getInt(8));
     }
 
     public void deleteExpense(int expense_id) {
