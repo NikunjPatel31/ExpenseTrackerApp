@@ -230,6 +230,9 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         // this method will insert wallet.
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        if (wallet.getWalletID() != -1) {
+            contentValues.put("wallet_id",wallet.getWalletID());
+        }
         contentValues.put("wallet_name",wallet.getWalletName());
         contentValues.put("wallet_initial_balance", wallet.getInitialBalance());
         contentValues.put("wallet_date", new SimpleDateFormat("dd-MM-yyyy").format(wallet.getDate()));

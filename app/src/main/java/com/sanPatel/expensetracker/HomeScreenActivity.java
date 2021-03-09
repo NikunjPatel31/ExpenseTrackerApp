@@ -154,23 +154,21 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
                     if (cursor.getCount() > 0) {
                         Log.d(TAG, "setBackgroundTask: wallet exist");
                         while (cursor.moveToNext()) {
-                            if (cursor.getInt(5) != 2) {
-                                Wallet wallet = new Wallet();
-                                wallet.setWalletID(cursor.getInt(0));
-                                wallet.setWalletName(cursor.getString(1));
-                                wallet.setInitialBalance(cursor.getDouble(2));
-                                wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
-                                wallet.setWalletSync(cursor.getInt(4));
+                            Wallet wallet = new Wallet();
+                            Log.d(TAG, "setBackgroundTask: WalletID: "+cursor.getInt(0));
+                            wallet.setWalletID(cursor.getInt(0));
+                            wallet.setWalletName(cursor.getString(1));
+                            wallet.setInitialBalance(cursor.getDouble(2));
+                            wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
+                            wallet.setWalletSync(cursor.getInt(4));
 
-                                walletList.add(wallet);
-                            }
+                            walletList.add(wallet);
                         }
                     } else {
                         Log.d(TAG, "setBackgroundTask: wallet does not exist");
                     }
 
                 } catch (Exception e) {
-
                 }
             }
 

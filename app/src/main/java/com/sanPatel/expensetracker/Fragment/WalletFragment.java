@@ -226,6 +226,7 @@ public class WalletFragment extends DialogFragment {
                 }
                 try {
                     Wallet wallet = new Wallet();
+                    wallet.setWalletID(-1);
                     wallet.setWalletName(etWalletName.getText().toString());
                     wallet.setInitialBalance(Double.parseDouble(etInitialBalance.getText().toString()));
                     wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(currentDate));

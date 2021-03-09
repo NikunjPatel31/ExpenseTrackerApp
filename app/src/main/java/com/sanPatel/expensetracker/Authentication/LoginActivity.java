@@ -339,9 +339,7 @@ public class LoginActivity extends AppCompatActivity {
         final ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d(TAG, "retrieve wallet: onChildAdded: "+snapshot.toString());
                 if (snapshot.exists()) {
-                    Log.d(TAG, "onChildAdded: wallet is there");
                     fetchedRecordCount[0]++;
                     try {
                         Wallet wallet = new Wallet();

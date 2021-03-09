@@ -2,6 +2,7 @@ package com.sanPatel.expensetracker.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 public class WalletRecyclerViewAdapter extends RecyclerView.Adapter<WalletRecyclerViewAdapter.WalletViewHolder> {
 
+    private static final String TAG = "WalletRecyclerView";
     private ArrayList<Wallet> walletList;
     private Context context;
     public WalletRecyclerViewAdapter(ArrayList<Wallet> walletList, Context context) {
@@ -50,6 +52,7 @@ public class WalletRecyclerViewAdapter extends RecyclerView.Adapter<WalletRecycl
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "getItemCount: SIZE: "+walletList.size());
         return walletList.size();
     }
 

@@ -123,6 +123,7 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     private void getIntentData() {
         // this method will get all the data passed by the intent.
         walletID = getIntent().getIntExtra("Wallet_id",-1);
+        Log.d(TAG, "getIntentData: walletID: "+walletID);
         toolbar.setTitle(getIntent().getStringExtra("Wallet_name"));
     }
 
