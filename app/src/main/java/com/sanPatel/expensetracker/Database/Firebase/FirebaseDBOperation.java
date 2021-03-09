@@ -96,7 +96,6 @@ public class FirebaseDBOperation {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance()
                 .getReference().child("Wallet").child(mAuth.getUid()).child(Integer.toString(cursor.getInt(0)));
-
         databaseReference.child("Wallet_name").setValue(cursor.getString(1));
         databaseReference.child("Wallet_initial_bal").setValue(cursor.getDouble(2));
         databaseReference.child("Wallet_data").setValue(cursor.getString(3));

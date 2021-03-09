@@ -156,6 +156,16 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <ImageView
+        android:id="@+id/image_view_no_expense_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src="@drawable/no_expense_entry"
+        app:layout_constraintTop_toBottomOf="@+id/constraint_layout_topbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <TextView
         android:id="@+id/text_view_latest_transaction"
         android:layout_width="wrap_content"

@@ -39,6 +39,7 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
     private RecyclerView myExpenseRecyclerView, walletRecyclerView;
     //private TextView tvIncomeAmount, tvExpenseAmount;
     private ImageView imgViewNoExpense;
+    private TextView tvAddWalletText;
 
     // animation.
     private Animation fabOpen, fabClose;
@@ -46,6 +47,7 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
     //flag variable.
     boolean isFabOpen = false;
     boolean isExpense = false;
+    boolean isWallet = false;
 
     // instance variable
     private ArrayList<Expense> expenseList;
@@ -139,6 +141,7 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
 //        tvExpenseAmount = findViewById(R.id.text_view_spend_amount_value);
         imgViewNoExpense = findViewById(R.id.image_view_no_expense_image);
         walletRecyclerView = findViewById(R.id.recycler_view_wallet);
+        tvAddWalletText = findViewById(R.id.text_view_add_wallet_text);
     }
 
     private void getWallet() {
@@ -152,20 +155,25 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
                 Cursor cursor = databaseHelper.getAllWallet();
                 try {
                     if (cursor.getCount() > 0) {
-                        Log.d(TAG, "setBackgroundTask: wallet exist");
                         while (cursor.moveToNext()) {
-                            Wallet wallet = new Wallet();
-                            Log.d(TAG, "setBackgroundTask: WalletID: "+cursor.getInt(0));
-                            wallet.setWalletID(cursor.getInt(0));
-                            wallet.setWalletName(cursor.getString(1));
-                            wallet.setInitialBalance(cursor.getDouble(2));
-                            wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
-                            wallet.setWalletSync(cursor.getInt(4));
+                            if (cursor.getInt(5) != 2) {
+                                Log.d(TAG, "setBackgroundTask: sync: "+cursor.getInt(5));
+                                Wallet wallet = new Wallet();
+                                wallet.setWalletID(cursor.getInt(0));
+                                wallet.setWalletName(cursor.getString(1));
+                                wallet.setInitialBalance(cursor.getDouble(2));
+                                wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(3)));
+                                wallet.setWalletSync(cursor.getInt(5));
 
-                            walletList.add(wallet);
+                                walletList.add(wallet);
+                            }
+                        }
+                        if (walletList.size() > 0) {
+                            isWallet = true;
                         }
                     } else {
-                        Log.d(TAG, "setBackgroundTask: wallet does not exist");
+                        // there is no wallet
+                        isWallet = false;
                     }
 
                 } catch (Exception e) {
@@ -177,6 +185,11 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
                 walletAdapter = new WalletRecyclerViewAdapter(walletList, getApplicationContext());
                 walletRecyclerView.setAdapter(walletAdapter);
                 walletAdapter.notifyDataSetChanged();
+                if (isWallet) {
+                    tvAddWalletText.setVisibility(View.INVISIBLE);
+                } else {
+                    tvAddWalletText.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -263,7 +276,10 @@ public class HomeScreenActivity extends AppCompatActivity implements WalletFragm
 
     @Override
     public void onButtonClickListener(Wallet wallet) {
+        tvAddWalletText.setVisibility(View.INVISIBLE);
         walletList.add(wallet);
         walletAdapter.notifyDataSetChanged();
     }
+
+
 }

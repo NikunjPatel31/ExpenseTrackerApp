@@ -44,7 +44,7 @@ public class WalletFragment extends DialogFragment {
     }
 
     // buttonClickedInterface
-    private static ButtonClickListener buttonClickListener;
+    private ButtonClickListener buttonClickListener;
 
     // instance variable
     private Wallet wallet;
@@ -96,8 +96,13 @@ public class WalletFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.wallet_fragment, container, false);
         initializeWidgets(view);
-        widgetClickListener();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        widgetClickListener();
     }
 
     @Override
@@ -139,7 +144,7 @@ public class WalletFragment extends DialogFragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(etWalletName.getText().toString().isEmpty() && etInitialBalance.getText().toString().isEmpty())) {
+                if ((!etWalletName.getText().toString().isEmpty() && !etInitialBalance.getText().toString().isEmpty())) {
                     if (isEdit) {
                         updateWallet();
                     } else {
@@ -206,23 +211,23 @@ public class WalletFragment extends DialogFragment {
 
     public void insertWallet() {
         // this method will insert wallet into the local database as well as firebase.
+        final SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getContext());
+        final int[] isSynced = new int[1];
         MyAsyncTask myAsyncTask = new MyAsyncTask();
         myAsyncTask.setAsyncTaskListener(new MyAsyncTask.AsyncTaskListener() {
             @Override
             public void setBackgroundTask() {
-                SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getContext());
+
                 String currentDate = new SimpleDateFormat("dd-MM-yyyy",
                         Locale.getDefault()).format(new Date());
 
                 String currentTime = new SimpleDateFormat("HH:mm:ss",
                         Locale.getDefault()).format(new Date());
 
-                int isSynced;
-
                 if (isNetworkConnected()) {
-                    isSynced = 1;
+                    isSynced[0] = 1;
                 } else {
-                    isSynced = 0;
+                    isSynced[0] = 0;
                 }
                 try {
                     Wallet wallet = new Wallet();
@@ -231,37 +236,13 @@ public class WalletFragment extends DialogFragment {
                     wallet.setInitialBalance(Double.parseDouble(etInitialBalance.getText().toString()));
                     wallet.setDate(new SimpleDateFormat("dd-MM-yyyy").parse(currentDate));
                     wallet.setTimeStamp(currentTime);
-                    wallet.setWalletSync(isSynced);
+                    wallet.setWalletSync(isSynced[0]);
                     databaseHelper.insertWallet(wallet);
                 } catch (Exception e) {
                     Log.d(TAG, "setBackgroundTask: Exception: "+e.getLocalizedMessage());
                 }
 
-                try {
-                    Cursor walletcursor = databaseHelper.getLastWallet();
-                    if (walletcursor.getCount() > 0) {
-                        walletcursor.moveToNext();
-                        buttonClickListener.onButtonClickListener(
-                                new Wallet(etWalletName.getText().toString(),
-                                        currentTime,
-                                        Double.parseDouble(etInitialBalance.getText().toString()),
-                                        new SimpleDateFormat("dd-MM-yyyy").parse(currentDate),
-                                        walletcursor.getInt(0),
-                                        isSynced));
-                    } else {
-                        buttonClickListener.onButtonClickListener(
-                                new Wallet(etWalletName.getText().toString(),
-                                        currentTime,
-                                        Double.parseDouble(etInitialBalance.getText().toString()),
-                                        new SimpleDateFormat("dd-MM-yyyy").parse(currentDate),
-                                        1,
-                                        isSynced));
-                    }
-                } catch (Exception e) {
-
-                }
-
-                if (isSynced == 1) {
+                if (isSynced[0] == 1) {
                     Cursor cursor = databaseHelper.getLastWallet();
                     if (cursor.getCount() > 0) {
                         cursor.moveToNext();
@@ -273,7 +254,34 @@ public class WalletFragment extends DialogFragment {
 
             @Override
             public void setPostExecuteTask() {
+                try {
+                    String currentDate = new SimpleDateFormat("dd-MM-yyyy",
+                            Locale.getDefault()).format(new Date());
 
+                    String currentTime = new SimpleDateFormat("HH:mm:ss",
+                            Locale.getDefault()).format(new Date());
+                    Cursor walletcursor = databaseHelper.getLastWallet();
+                    if (walletcursor.getCount() > 0) {
+                        walletcursor.moveToNext();
+                        buttonClickListener.onButtonClickListener(
+                                new Wallet(etWalletName.getText().toString(),
+                                        currentTime,
+                                        Double.parseDouble(etInitialBalance.getText().toString()),
+                                        new SimpleDateFormat("dd-MM-yyyy").parse(currentDate),
+                                        walletcursor.getInt(0),
+                                        isSynced[0]));
+                    } else {
+                        buttonClickListener.onButtonClickListener(
+                                new Wallet(etWalletName.getText().toString(),
+                                        currentTime,
+                                        Double.parseDouble(etInitialBalance.getText().toString()),
+                                        new SimpleDateFormat("dd-MM-yyyy").parse(currentDate),
+                                        1,
+                                        isSynced[0]));
+                    }
+                } catch (Exception e) {
+
+                }
                 dismiss();
             }
         });

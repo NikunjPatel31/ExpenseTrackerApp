@@ -33,6 +33,17 @@
             style="@style/expenseHeadingTextView"
             android:textColor="@color/colorActivityBackground"/>
 
+        <TextView
+            android:id="@+id/text_view_add_wallet_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_wallet_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/FAB_add_wallet"
+            android:text="Press add button to add wallet"
+            style="@style/editProfileDialogFragmentTextView"
+            android:textColor="@color/colorEdittextHint"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_wallet"
             android:layout_width="0dp"

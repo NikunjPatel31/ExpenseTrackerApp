@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class ViewAllExpense extends AppCompatActivity {
-    
+
+    private static final String TAG = "ViewAllExpense";
     // widgets
     private RecyclerView myExpenseRecyclerView;
     private Toolbar toolbar;
@@ -64,17 +65,19 @@ public class ViewAllExpense extends AppCompatActivity {
                         // delete record from firebase and then delete from sqlite.
                         FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
                         firebaseDBOperation.deleteExpense(cursor.getInt(0));
-                        databaseHelper.deleteExpense(cursor.getInt(0));
+                        databaseHelper.deleteExpense(cursor.getInt(0),1);
                     }
                 }
-            } else if (walletCursor.getCount() > 0) {
+            } if (walletCursor.getCount() > 0) {
+                Log.d(TAG, "sync: we are in wallet section");
                 while (walletCursor.moveToNext()) {
                     // sync wallet data with firebase
+                    Log.d(TAG, "sync: "+walletCursor.getInt(5));
                     if (walletCursor.getInt(5) == 0) {
                         // push record to firebase
                         databaseHelper.updateWalletSyncValue(walletCursor.getInt(0),1);
                         FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
-                        firebaseDBOperation.insertWallet(cursor);
+                        firebaseDBOperation.insertWallet(walletCursor);
                     } else if (walletCursor.getInt(5) == 2) {
                         // delete record from firebase and then delete from sqlite.
                         FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());

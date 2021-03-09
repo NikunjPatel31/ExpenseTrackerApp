@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +35,8 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     // widgets
     private RecyclerView recyclerViewTranscation;
     private Toolbar toolbar;
-    private TextView tvAvailableBal, tvTotal, tvSpend;
+    private TextView tvAvailableBal, tvTotal;
+    private ImageView imgNoExpense;
 
     // instance variable
     private static final String TAG = "WalletActivity";
@@ -43,6 +45,8 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
     private MyExpenseRecyclerViewAdapter adapter;
     private double initialBal;
     private Wallet wallet = new Wallet();
+    private boolean isExpense = false;
+    private Cursor expenseCursor;
 
     public void addEntry(View view) {
         // this method open AddExpenseActivity.
@@ -100,10 +104,17 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
                     databaseHelper.deleteWallet(wallet.getWalletID());
                     FirebaseDBOperation firebaseDBOperation = new FirebaseDBOperation(getApplicationContext());
                     firebaseDBOperation.deleteWallet(wallet.getWalletID());
+                    if (expenseCursor.getCount() > 0) {
+                        expenseCursor.moveToFirst();
+                        do {
+                            firebaseDBOperation.deleteExpense(expenseCursor.getInt(0));
+                        } while (expenseCursor.moveToNext());
+                    }
                 } else {
                     // internet access is not there.
                     SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
                     databaseHelper.updateWalletSyncValue(wallet.getWalletID(),2);
+                    databaseHelper.updateExpense(wallet.getWalletID(), 2);
                 }
                 onBackPressed();
                 break;
@@ -117,13 +128,12 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
         toolbar = findViewById(R.id.toolbar_wallet);
         tvAvailableBal = findViewById(R.id.text_view_avialable_amount_value);
         tvTotal = findViewById(R.id.text_view_total_amount_value);
-        tvSpend = findViewById(R.id.text_view_spend_amount_value);
+        imgNoExpense = findViewById(R.id.image_view_no_expense_image);
     }
 
     private void getIntentData() {
         // this method will get all the data passed by the intent.
         walletID = getIntent().getIntExtra("Wallet_id",-1);
-        Log.d(TAG, "getIntentData: walletID: "+walletID);
         toolbar.setTitle(getIntent().getStringExtra("Wallet_name"));
     }
 
@@ -134,22 +144,22 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
             @Override
             public void setBackgroundTask() {
                 SqliteDatabaseHelper databaseHelper = new SqliteDatabaseHelper(getApplicationContext());
-                Cursor cursor = databaseHelper.getExpenseForWallet(walletID);
-                if (cursor.getCount() > 0) {
+                expenseCursor = databaseHelper.getExpenseForWallet(walletID);
+                if (expenseCursor.getCount() > 0) {
                     // expense for walletId is available.
-                    Log.d(TAG, "setBackgroundTask: cursor: "+cursor.getCount());
+                    isExpense = true;
                     try {
-                        while (cursor.moveToNext()) {
+                        while (expenseCursor.moveToNext()) {
                             Expense expense = new Expense();
-                            expense.setExpense_id(cursor.getInt(0));
-                            expense.setExpense_title(cursor.getString(1));
-                            expense.setExpense_description(cursor.getString(2));
-                            expense.setExpense_amount(cursor.getDouble(3));
-                            expense.setTime(cursor.getString(5));
-                            expense.setExpense_type(cursor.getInt(6));
-                            expense.setExpense_date(new SimpleDateFormat("dd-MM-yyyy").parse(cursor.getString(4)));
-                            expense.setSync(cursor.getInt(7));
-                            expense.setWalletID(cursor.getInt(8));
+                            expense.setExpense_id(expenseCursor.getInt(0));
+                            expense.setExpense_title(expenseCursor.getString(1));
+                            expense.setExpense_description(expenseCursor.getString(2));
+                            expense.setExpense_amount(expenseCursor.getDouble(3));
+                            expense.setTime(expenseCursor.getString(5));
+                            expense.setExpense_type(expenseCursor.getInt(6));
+                            expense.setExpense_date(new SimpleDateFormat("dd-MM-yyyy").parse(expenseCursor.getString(4)));
+                            expense.setSync(expenseCursor.getInt(7));
+                            expense.setWalletID(expenseCursor.getInt(8));
 
                             expenseList.add(expense);
                         }
@@ -159,7 +169,8 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
 
                 } else {
                     // there is no expense for walletId.
-                    Log.d(TAG, "setBackgroundTask: Nothing");
+                    // make the image visible...
+                    isExpense = false;
                 }
             }
 
@@ -169,6 +180,11 @@ public class WalletActivity extends AppCompatActivity implements WalletFragment.
                     adapter = new MyExpenseRecyclerViewAdapter(expenseList, getApplicationContext());
                     recyclerViewTranscation.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
+                }
+                if (isExpense) {
+                    imgNoExpense.setVisibility(View.INVISIBLE);
+                } else {
+                    imgNoExpense.setVisibility(View.VISIBLE);
                 }
             }
         });

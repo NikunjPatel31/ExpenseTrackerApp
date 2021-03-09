@@ -169,9 +169,24 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public boolean deleteExpense(int expense_id) {
+    public void updateExpense(int wallet_id,int sync) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("sync", sync);
+        db.update(EXPENSE_TABLE_NAME, contentValues,"wallet_id = ?", new String[] {String.valueOf(wallet_id)});
+    }
+
+    public boolean deleteExpense(int id, int mode) {
+        // mode will decide whether to delete expense with expense_id or wallet_id
+        // mode - 1 = expense_id
+        // mode - 2 = wallet_id
         SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete(EXPENSE_TABLE_NAME,"entry_id = ?",new String[] {String.valueOf(expense_id)});
+        int result = 0;
+        if (mode == 1) {
+            result = db.delete(EXPENSE_TABLE_NAME, "entry_id = ?", new String[]{String.valueOf(id)});
+        } else if (mode == 2) {
+            result = db.delete(EXPENSE_TABLE_NAME, "wallet_id = ?", new String[]{String.valueOf(id)});
+        }
         return result != 0;
     }
 
@@ -279,6 +294,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         // this method will delete wallet.
         SQLiteDatabase db = getWritableDatabase();
         db.delete(WALLET_TABLE_NAME,"wallet_id = ?",new String[] {String.valueOf(wallet_id)});
+        deleteExpense(wallet_id,2);
     }
 
     public void updateWalletSyncValue(int wallet_id, int sync) {
