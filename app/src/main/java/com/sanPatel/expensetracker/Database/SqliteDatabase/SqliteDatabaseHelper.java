@@ -8,12 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.sanPatel.expensetracker.Datas.Expense;
 import com.sanPatel.expensetracker.Datas.Wallet;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class SqliteDatabaseHelper extends SQLiteOpenHelper {
 
@@ -241,7 +238,7 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM "+EXPENSE_TABLE_NAME+" WHERE entry_id = "+expense_id,null);
     }
 
-    public boolean insertWallet(Wallet wallet) {
+    public void insertWallet(Wallet wallet) {
         // this method will insert wallet.
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -255,7 +252,6 @@ public class SqliteDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("wallet_sync",wallet.getWalletSync());
         long result = db.insert(WALLET_TABLE_NAME,null,contentValues);
         db.close();
-        return result != -1;
     }
 
     public Cursor getLastWallet() {
