@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinator_layout_parent_login"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,106 +8,112 @@
     android:background="@color/colorPrimary"
     tools:context=".Authentication.LoginActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/text_view_login_title"
-            style="@style/authenticationTextViewHeading"
-            android:text="Login"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/edit_text_email"
-            style="@style/authenticationEdittext"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_view_login_title" />
-
-    <EditText
-        android:id="@+id/edit_text_password"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_email"
-        style="@style/authenticationEdittext"/>
-
-        <TextView
-            android:id="@+id/text_view_forgot_password"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:fontFamily="@font/rubik_bold"
-            android:text="Forgot Password ?"
-            android:textAlignment="center"
-            android:textColor="@color/colorHeading"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_text_password" />
+            android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/button_login"
-        android:text="Login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_forgot_password"
-        style="@style/authenticationButton"
-        android:onClick="login"/>
+            <TextView
+                android:id="@+id/text_view_login_title"
+                style="@style/authenticationTextViewHeading"
+                android:text="Login"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/content_loading_progress_bar_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:theme="@style/ContentLoadingProgress"
-            style="?android:attr/progressBarStyle"
-            app:layout_constraintStart_toStartOf="@id/button_login"
-            app:layout_constraintEnd_toEndOf="@id/button_login"
-            app:layout_constraintTop_toTopOf="@id/button_login"
-            app:layout_constraintBottom_toBottomOf="@id/button_login"/>
+            <EditText
+                android:id="@+id/edit_text_email"
+                style="@style/authenticationEdittext"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_login_title" />
 
-    <LinearLayout
-        android:id="@+id/linear_layout_sign_in"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_login"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_marginTop="35dp"
-        android:layout_marginBottom="30dp">
+            <EditText
+                android:id="@+id/edit_text_password"
+                android:hint="Password"
+                android:inputType="textPassword"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edit_text_email"
+                style="@style/authenticationEdittext"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Don't have an account ?"
-            android:fontFamily="@font/rubik_bold"
-            android:textAlignment="center"
-            android:textColor="@color/colorHeading"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/text_view_forgot_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:fontFamily="@font/rubik_bold"
+                android:text="Forgot Password ?"
+                android:textAlignment="center"
+                android:textColor="@color/colorHeading"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edit_text_password" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/rubik_bold"
-            android:text="Sign In"
-            android:textAlignment="center"
-            android:textColor="@color/colorHeading"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            <Button
+                android:id="@+id/button_login"
+                android:text="Login"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_forgot_password"
+                style="@style/authenticationButton"
+                android:onClick="login"/>
 
-    </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/content_loading_progress_bar_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:theme="@style/ContentLoadingProgress"
+                style="?android:attr/progressBarStyle"
+                app:layout_constraintStart_toStartOf="@id/button_login"
+                app:layout_constraintEnd_toEndOf="@id/button_login"
+                app:layout_constraintTop_toTopOf="@id/button_login"
+                app:layout_constraintBottom_toBottomOf="@id/button_login"/>
 
-</ScrollView>
+            <LinearLayout
+                android:id="@+id/linear_layout_sign_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/button_login"
+                app:layout_constraintVertical_bias="0.0"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="30dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Don't have an account ?"
+                    android:fontFamily="@font/rubik_bold"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorHeading"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_bold"
+                    android:text="Sign In"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorHeading"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

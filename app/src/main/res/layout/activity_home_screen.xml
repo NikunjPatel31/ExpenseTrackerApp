@@ -169,6 +169,7 @@
         android:layout_margin="20dp"/>
 
     <Button
+        android:layout_width="wrap_content"
         android:onClick="viewAllExpense"
         android:id="@+id/button_view_all"
         android:layout_height="30dp"
@@ -180,7 +181,9 @@
         android:textSize="12sp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        style="@style/authenticationButton"/>
+        style="@style/authenticationButton"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:textColor="@color/colorHeading"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_latest_transactions"

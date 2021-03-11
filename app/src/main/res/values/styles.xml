@@ -40,12 +40,15 @@
     </style>
 
     <style name="authenticationButton">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">20dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:paddingStart">20dp</item>
         <item name="android:paddingEnd">20dp</item>
-        <item name="android:textColor">@color/colorHeading</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <!--<item name="android:textColor">@color/colorHeading</item>-->
         <item name="android:background">@drawable/button_authentication_background</item>
         <item name="android:layout_marginTop">40dp</item>
     </style>

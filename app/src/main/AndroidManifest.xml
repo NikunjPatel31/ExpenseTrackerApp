@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WalletActivity"></activity>
+        <activity android:name=".Authentication.ForgotPassword"></activity>
+        <activity android:name=".WalletActivity" />
         <activity android:name=".ViewAllExpense" />
         <activity android:name=".AddExpenseActivity" />
         <activity android:name=".AccountSetting.SettingActivity" />

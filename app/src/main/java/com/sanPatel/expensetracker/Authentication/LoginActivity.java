@@ -3,9 +3,13 @@ package com.sanPatel.expensetracker.Authentication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.ContentLoadingProgressBar;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -15,11 +19,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -46,9 +52,11 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     // widgets
     private LinearLayout linearLayoutSignIn;
+    private TextView tvForgotPass;
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private ContentLoadingProgressBar contentLoadingProgressBar;
+    private CoordinatorLayout coorLayLogin;
 
     // firebase instance
     FirebaseAuth mAuth;
@@ -58,10 +66,24 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view) {
         // this method will handle login button click listener
-        if (validateFields()) {
-            btnLogin.setVisibility(View.INVISIBLE);
-            contentLoadingProgressBar.setVisibility(View.VISIBLE);
-            loginUser();
+        if (isNetworkConnected()) {
+            if (validateFields()) {
+                btnLogin.setVisibility(View.INVISIBLE);
+                contentLoadingProgressBar.setVisibility(View.VISIBLE);
+                loginUser();
+            }
+        } else {
+            // there is no internet connectivity
+            // show snackbar
+            final Snackbar snackbar = Snackbar.make(coorLayLogin,"No Internet Connection",Snackbar.LENGTH_SHORT)
+                    .setActionTextColor(Color.YELLOW)
+                    .setAction("Ok", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+            snackbar.show();
         }
     }
 
@@ -90,6 +112,8 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.edit_text_password);
         btnLogin = findViewById(R.id.button_login);
         contentLoadingProgressBar = findViewById(R.id.content_loading_progress_bar_login);
+        tvForgotPass = findViewById(R.id.text_view_forgot_password);
+        coorLayLogin = findViewById(R.id.coordinator_layout_parent_login);
     }
 
     private void initializeFirebaseWidgets() {
@@ -103,6 +127,49 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, SignInActivity.class));
+            }
+        });
+        tvForgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(),ForgotPassword.class));
+                /*if (isNetworkConnected()) {
+                    String email;
+                    email = etEmail.getText().toString();
+                    if (!TextUtils.isEmpty(email)) {
+                        // send the forgot password email
+                        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // email is send successfully.
+                                // show toast message
+                                Toast.makeText(LoginActivity.this, "Email is send", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Failed to sent email
+                                // show toast messaage
+                                Toast.makeText(LoginActivity.this, "Error in sending email", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        // email edit text is empty show toast message
+                        Toast.makeText(LoginActivity.this, "Email is required", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // there is no internet connectivity.
+                    // show snackbar
+                    final Snackbar snackbar = Snackbar.make(coorLayLogin,"No Internet Connection",Snackbar.LENGTH_SHORT)
+                            .setActionTextColor(Color.YELLOW)
+                            .setAction("Ok", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            });
+                    snackbar.show();
+                }*/
             }
         });
     }
@@ -414,5 +481,11 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }
